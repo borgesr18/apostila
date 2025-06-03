@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apostila Interativa de Pães</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F0F4F8; 
+            color: #1E293B; 
+        }
+        .sidebar {
+            background-color: #0C4A6E; 
+            min-height: 100vh;
+            width: 25%; 
+        }
+        @media (min-width: 1024px) { 
+            .sidebar {
+                width: 20%;
+            }
+        }
+        #downloadApostilaButton { 
+            background-color: #E0F2FE; 
+            color: #0C4A6E; 
+            font-weight: 600;
+            padding: 0.65rem 1rem; 
+            border-radius: 0.375rem; 
+            transition: background-color 0.2s ease-in-out;
+            border: 1px solid #075985; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        #downloadApostilaButton:hover {
+            background-color: #BAE6FD; 
+        }
+        #downloadApostilaButton svg {
+             margin-right: 0.5rem; 
+        }
+
+        .nav-category-button, .nav-page-button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 0.85rem 1rem;
+            font-size: 0.875rem; 
+            font-weight: 700; 
+            color: #E0F2FE; 
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid #075985; 
+            cursor: pointer;
+            text-align: left;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .nav-category-button:hover, .nav-page-button:hover {
+            background-color: #075985;
+        }
+        .nav-category-button svg, .nav-page-button svg {
+            width: 1rem;
+            height: 1rem;
+            transition: transform 0.3s ease-in-out;
+            fill: #E0F2FE; 
+        }
+        .nav-category-button.open svg {
+            transform: rotate(90deg);
+        }
+        .nav-submenu {
+            max-height: 0;
+            overflow-y: auto; 
+            transition: max-height 0.4s ease-in-out; 
+            background-color: #0E5E8E; 
+        }
+        .nav-submenu.open {
+            max-height: 500px; 
+        }
+        .nav-item {
+            padding: 0.75rem 1rem 0.75rem 1.75rem; 
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+            color: #E0F2FE; 
+            display: block;
+            font-size: 0.875rem; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
+        .nav-item:hover {
+            background-color: #075985; 
+            color: #FFFFFF; 
+        }
+        .nav-item.active, .nav-page-button.active-page, .nav-category-button.active-category {
+            background-color: #2563EB; 
+            color: white;
+            font-weight: 600;
+        }
+         .nav-category-button.active-category { 
+             background-color: #0369A1; 
+             color: #FFFFFF;
+        }
+
+        .content-area {
+            background-color: #FFFFFF; 
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            position: relative; 
+        }
+        .page-title, .recipe-title {
+            color: #111827; 
+            border-bottom: 2px solid #3B82F6; 
+            font-size: 1.875rem; 
+            font-weight: 700; 
+            margin-bottom: 1rem; 
+            padding-bottom: 0.5rem; 
+        }
+        .content-area h3 { 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            margin-top: 1.5rem; 
+            margin-bottom: 1rem; 
+            color: #1E293B; 
+            border-bottom: 1px solid #93C5FD; 
+            padding-bottom: 0.25rem;
+        }
+         .content-area h4 { 
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            margin-top: 1.25rem; 
+            margin-bottom: 0.75rem; 
+            color: #1E293B; 
+        }
+        .content-area p, .content-area li:not(.edit-item-li) {
+            color: #334155; 
+            margin-bottom: 0.75rem; 
+            line-height: 1.6;
+        }
+        .content-area ul:not(.edit-controls) {
+            list-style-type: disc;
+            margin-left: 1.5rem; 
+            padding-left: 1rem; 
+        }
+         .content-area ol {
+            list-style-type: decimal;
+            margin-left: 1.5rem; 
+            padding-left: 1rem; 
+        }
+        .content-area strong {
+            font-weight: 600;
+            color: #1E293B;
+        }
+        .dicas-jean { 
+            background-color: #F0FDFA; 
+            border-left: 4px solid #14B8A6; 
+            color: #0F766E; 
+            padding: 1rem; 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        th, td {
+            border: 1px solid #E5E7EB; 
+            padding: 0.5rem;
+            text-align: left;
+            vertical-align: top; 
+        }
+        th {
+            background-color: #F3F4F6; 
+            font-weight: 600;
+            color: #374151; 
+        }
+        .edit-mode-input, .edit-mode-textarea {
+            width: 100%;
+            padding: 0.375rem 0.5rem;
+            border: 1px solid #D1D5DB; 
+            border-radius: 0.25rem; 
+            box-sizing: border-box; 
+        }
+        .edit-mode-textarea {
+            min-height: 60px; 
+            resize: vertical; 
+        }
+        .remove-btn, .add-btn {
+            background-color: #EF4444; 
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+            transition: background-color 0.2s;
+        }
+        .remove-btn:hover {
+            background-color: #DC2626; 
+        }
+        .add-btn {
+            background-color: #22C55E; 
+            margin-top: 0.5rem;
+            display: inline-block; 
+        }
+        .add-btn:hover {
+            background-color: #16A34A; 
+        }
+        .edit-item-li { 
+            display: flex;
+            align-items: flex-start; 
+            margin-bottom: 0.5rem;
+        }
+        .edit-item-li .edit-mode-textarea {
+            flex-grow: 1; 
+        }
+        #mobileMenuButton { display: none; }
+        #recipeControlsContainer, #printRecipeButtonContainer { 
+            text-align: right;
+            margin-bottom: 1rem;
+        }
+        #printRecipeButton, #saveRecipeChangesButton, #editRecipeButton, #cancelEditButton, #restoreDefaultRecipesButton {
+             background-color: #2563EB; 
+             color: white;
+             font-weight: 600; 
+             padding-top: 0.5rem; padding-bottom: 0.5rem; 
+             padding-left: 1rem; padding-right: 1rem; 
+             border-radius: 0.375rem; 
+             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+             margin-left: 0.5rem; 
+        }
+        #printRecipeButton:hover, #saveRecipeChangesButton:hover, #editRecipeButton:hover, #cancelEditButton:hover, #restoreDefaultRecipesButton:hover {
+            background-color: #1D4ED8; 
+        }
+        #editRecipeButton { background-color: #F59E0B; } 
+        #editRecipeButton:hover { background-color: #D97706; } 
+        #cancelEditButton { background-color: #6B7280; } 
+        #cancelEditButton:hover { background-color: #4B5563; } 
+        #restoreDefaultRecipesButton { background-color: #D9534F; } 
+        #restoreDefaultRecipesButton:hover { background-color: #C9302C; }
+
+
+        @media (max-width: 768px) {
+            #mobileMenuButton { display: block; position: fixed; top: 1rem; left: 1rem; z-index: 50; background-color: #2563EB; }
+            .sidebar { position: fixed; top: 0; left: -250px; width: 250px; height: 100%; z-index: 40; transition: left 0.3s ease-in-out; overflow-y: auto; }
+            .sidebar.open { left: 0; }
+            .main-content-area { margin-left: 0; }
+            .content-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 30; }
+            .content-overlay.open { display: block; }
+            #printRecipeButtonContainer, #recipeControlsContainer { margin-top: 1rem; text-align: center; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+        }
+
+        @media print {
+            body { background-color: #FFFFFF; color: #000000; }
+            .sidebar, #mobileMenuButton, #printRecipeButtonContainer, #recipeControlsContainer, footer, header, #flourCalculatorContainer, .remove-btn, .add-btn, #downloadApostilaButton, #restoreDefaultRecipesButton { display: none !important; }
+            .edit-mode-input, .edit-mode-textarea { background-color: transparent !important; border: none !important; outline: none !important; padding: 0 !important; width: auto !important; min-height: auto !important; resize: none !important; }
+            .main-content-area { width: 100%; margin: 0; padding: 0; }
+            .content-area { box-shadow: none; border-radius: 0; padding: 1cm; }
+            .recipe-title, .page-title { border-bottom: 2px solid #000000; font-size: 24pt; }
+            .content-area h3 { font-size: 18pt; border-bottom: 1px solid #cccccc; }
+            .content-area h4 { font-size: 14pt; }
+            table, th, td { border: 1px solid #000000 !important; }
+            th { background-color: #EEEEEE !important; }
+            .dicas-jean { border-left: 4px solid #000000 !important; background-color: #FAFAFA !important; padding: 10px; margin-top: 15px; }
+            textarea { border: 1px dashed #ccc !important; background-color: #f9f9f9 !important; display: block; width: 100%; min-height: 50px; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="flex flex-col md:flex-row">
+        <button id="mobileMenuButton" class="md:hidden p-2 text-white rounded-md shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+        </button>
+
+        <aside id="sidebar" class="sidebar p-4 space-y-0">
+            <h1 class="text-2xl font-bold text-sky-100 mb-4 text-center">Apostila de Pães</h1>
+            <button id="downloadApostilaButton" class="w-full text-sm text-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block mr-1 align-text-bottom">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Baixar Apostila Atualizada
+            </button>
+            <nav id="recipeNav" class="space-y-0">
+            </nav>
+        </aside>
+
+        <div id="contentOverlay" class="content-overlay md:hidden"></div>
+
+        <main id="mainContent" class="main-content-area flex-1 p-4 md:p-8">
+            <header class="mb-8 text-center">
+                <h1 class="text-4xl font-bold text-blue-700">Apostila Interativa de Pães</h1>
+                <p class="text-lg text-slate-600 mt-2">Um Guia Completo para Panificação</p>
+            </header>
+            
+            <div id="recipeControlsContainer" class="flex justify-end items-center mb-4">
+                 <button id="editRecipeButton" style="display: none;">
+                    ✏️ Editar Receita
+                </button>
+                <button id="saveRecipeChangesButton" style="display: none;">
+                    💾 Salvar Localmente
+                </button>
+                 <button id="cancelEditButton" style="display: none;">
+                    ❌ Cancelar Edição
+                </button>
+                 <button id="printRecipeButton" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a2.25 2.25 0 012.25 2.25H15M10 7.5V3m2.25 4.5V3m0 11.25c0 .386.314.75.75.75h1.5a.75.75 0 00.75-.75V7.5M6 18.75a.75.75 0 00.75.75h.008a.75.75 0 00.75-.75V18.75m0 0c0-.973.788-1.75 1.75-1.75H15M10 18.75V7.5m6-4.5v3.75m.75-3.75h.008v3.75M16.5 18.75V7.5m0 0v3.75m0-3.75h.008a1.875 1.875 0 011.875 1.875v1.5A1.875 1.875 0 0118.75 12h.008v3.75m-1.875-3.75h.008a1.875 1.875 0 011.875 1.875v1.5A1.875 1.875 0 0118.75 12h-1.5m0 0H3.75m0 0h-.008A1.875 1.875 0 011.875 12V9.75A1.875 1.875 0 013.75 8.25h1.5" />
+                    </svg>
+                    Imprimir Receita
+                </button>
+                 <button id="restoreDefaultRecipesButton" style="display: none;">
+                    Restaurar Padrão
+                </button>
+            </div>
+            <div id="recipeContentContainer" class="content-area p-6 md:p-8">
+                <div id="recipeContent">
+                    <p class="text-lg text-center text-slate-500">Selecione uma receita ou seção ao lado para começar.</p>
+                </div>
+            </div>
+
+            <footer class="mt-12 text-center text-sm text-slate-500">
+                <p>&copy; 2024 - Apostila de Panificação.</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // --- DATA DEFINITIONS ---
+        const pageContents = {
+            fermentation_geral: `<h2 class="page-title">Fermentação na Panificação – A Alma do Pão</h2><p>A fermentação é um dos processos mais cruciais e fascinantes na arte da panificação...</p>`,
+            levain_content: `
+                <h2 class="page-title">Levain (Fermento Natural)</h2>
+                <p>O Levain, também conhecido como Massa Madre ou Sourdough Starter, é uma cultura simbiótica de leveduras selvagens e bactérias ácido-láticas que fermentam a farinha e a água. É a forma mais antiga de fermentação de pães.</p>
+                <h3>Características e Forma de Fazer (Conceitual):</h3>
+                <ul>
+                    <li><strong>Criação:</strong> Inicia-se misturando farinha (geralmente integral ou de centeio, ricas em microrganismos) e água, deixando a mistura em temperatura ambiente. Diariamente, alimenta-se descartando uma parte e adicionando mais farinha e água frescas. Este processo pode levar de 7 a 14 dias até que o levain esteja ativo e estável.</li>
+                    <li><strong>Manutenção:</strong> Um levain maduro precisa ser alimentado regularmente (refrescos) para se manter ativo. A frequência depende da temperatura de armazenamento (mais frequente em temperatura ambiente, menos frequente se refrigerado).</li>
+                    <li><strong>Uso:</strong> Uma porção do levain maduro e ativo é incorporada à massa final do pão, atuando como o principal (ou único) agente de fermentação.</li>
+                    <li><strong>Benefícios:</strong> Confere ao pão um sabor complexo e caracteristicamente ácido (de suave a intenso, dependendo do manejo), melhor digestibilidade, maior durabilidade e uma estrutura de miolo geralmente mais aberta e irregular.</li>
+                    <li><strong>Tipos:</strong> Pode ser mantido com diferentes hidratações (levain líquido – 100% de hidratação ou mais; levain firme – menos de 60-70% de hidratação), o que influencia o perfil de sabor e a atividade fermentativa.</li>
+                </ul>
+                <h3>Modo de Fazer (Passo a Passo - Criação Básica de Levain Líquido 100% Hidratação):</h3>
+                <ol>
+                    <li><strong>Dia 1:</strong> Num frasco de vidro limpo, misture 50g de farinha de centeio integral (ou trigo integral) com 50g de água morna (aproximadamente 28-30°C). Cubra frouxamente (com a tampa do frasco apenas pousada ou um pano preso com um elástico) e deixe em temperatura ambiente (idealmente 22-26°C) por 24 horas.</li>
+                    <li><strong>Dia 2:</strong> Observe. Pode não haver muita atividade. Deixe por mais 24 horas.</li>
+                    <li><strong>Dia 3:</strong> Descarte metade da mistura (aproximadamente 50g). Adicione 25g de farinha de trigo comum (T65 ou similar) e 25g de farinha integral (ou centeio), mais 50g de água morna. Misture bem, cubra e deixe por 24 horas.</li>
+                    <li><strong>Dia 4 ao Dia 7 (ou mais):</strong> Repita o processo do Dia 3 (descartar metade, alimentar com 50g de farinha total – pode ser uma mistura ou apenas trigo comum – e 50g de água). Começará a notar bolhas, aumento de volume e um aroma ácido agradável. O levain está a ficar ativo quando dobra de volume consistentemente em 4-8 horas após a alimentação.</li>
+                    <li><strong>Manutenção (após ativo):</strong>
+                        <ul>
+                            <li><strong>Temperatura Ambiente:</strong> Alimente a cada 12-24 horas (descarte uma parte, adicione farinha e água na proporção desejada, por exemplo, 1:1:1 – levain:farinha:água).</li>
+                            <li><strong>Refrigerado:</strong> Após alimentar e deixar fermentar por 1-2 horas em temperatura ambiente, pode guardar no frigorífico por até uma semana. Antes de usar, retire do frigorífico, deixe atingir a temperatura ambiente e alimente-o uma ou duas vezes até estar bem ativo.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Uso:</strong> Utilize o levain no pico da sua atividade, geralmente algumas horas após a alimentação, quando estiver borbulhante e tiver duplicado ou triplicado de volume.</li>
+                </ol>
+            `,
+            biga_content: `
+                <h2 class="page-title">Biga (Pré-Fermento Firme)</h2>
+                <p>A Biga é um tipo de pré-fermento de origem italiana, caracterizado por sua consistência firme e baixa hidratação.</p>
+                <h3>Características e Forma de Fazer (Conceitual):</h3>
+                <ul>
+                    <li><strong>Composição Típica:</strong> Farinha, água (geralmente 45-60% da quantidade de farinha na biga) e uma pequena quantidade de fermento comercial (fresco ou seco).</li>
+                    <li><strong>Preparo:</strong> Os ingredientes são misturados brevemente até apenas incorporar, resultando numa massa relativamente seca e fragmentada.</li>
+                    <li><strong>Fermentação:</strong> A biga fermenta por um período longo, geralmente de 12 a 16 horas (ou até mais), em temperatura ambiente controlada (mais fresca, em torno de 16-18°C) ou parte do tempo refrigerada.</li>
+                    <li><strong>Uso:</strong> A biga maturada é adicionada à massa final do pão, contribuindo com uma porcentagem significativa da farinha total da receita.</li>
+                    <li><strong>Benefícios:</strong> Desenvolve acidez lática moderada, o que contribui para um sabor mais complexo e levemente adocicado, melhora a força da massa (extensibilidade), a estrutura do miolo (alvéolos maiores e irregulares) e a durabilidade do pão. É comum em pães italianos como Ciabatta e alguns tipos de Panettone.</li>
+                </ul>
+                <h3>Modo de Fazer (Passo a Passo - Exemplo de Biga a 50% de hidratação):</h3>
+                <ol>
+                    <li><strong>Ingredientes para a Biga:</strong>
+                        <ul>
+                            <li>200g de farinha de trigo forte (T65 ou específica para pão)</li>
+                            <li>100g de água fria (aproximadamente 15-18°C)</li>
+                            <li>0.2g - 0.4g de fermento biológico seco instantâneo (FSI) (uma pitada muito pequena) OU 0.6g - 1.2g de fermento fresco.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Mistura:</strong> Numa tigela, coloque a farinha e o fermento. Adicione a água. Misture com uma colher ou com as mãos apenas até que a farinha absorva a água e não haja farinha seca visível. A massa será bastante seca, irregular e não homogénea. Não precisa de sovar.</li>
+                    <li><strong>Fermentação:</strong> Transfira a massa para um recipiente com tampa (não totalmente selado) ou cubra a tigela com película aderente. Deixe fermentar em temperatura ambiente fresca (idealmente 16-18°C) por 12 a 16 horas. Se a temperatura ambiente for mais alta, pode ser necessário reduzir o tempo ou refrigerar parte do período após uma fermentação inicial de 1-2 horas em temperatura ambiente.</li>
+                    <li><strong>Aspeto Final:</strong> A biga maturada terá aumentado de volume (não necessariamente duplicado como uma massa normal), terá um aroma alcoólico e ligeiramente ácido, e ao ser partida, mostrará uma estrutura interna com alguns alvéolos.</li>
+                    <li><strong>Uso:</strong> Desfaça a biga em pedaços e adicione-a aos restantes ingredientes da massa final do pão conforme a receita.</li>
+                </ol>
+            `,
+            poolish_content: `
+                <h2 class="page-title">Poolish (Pré-Fermento Líquido)</h2>
+                <p>O Poolish é um pré-fermento de origem polonesa, popularizado na França, caracterizado por sua alta hidratação e consistência líquida.</p>
+                <h3>Características e Forma de Fazer (Conceitual):</h3>
+                <ul>
+                    <li><strong>Composição Típica:</strong> Farinha e água em partes iguais (100% de hidratação em relação à farinha do poolish) e uma quantidade muito pequena de fermento comercial.</li>
+                    <li><strong>Preparo:</strong> Os ingredientes são misturados até obter uma massa líquida e homogênea, similar a uma massa de panqueca.</li>
+                    <li><strong>Fermentação:</strong> Fermenta por um período que pode variar de algumas horas (3-4h em temperatura ambiente mais quente) até 12-16 horas (em temperatura ambiente mais fresca ou com parte do tempo refrigerado). O ponto ideal é quando está cheio de bolhas, ativo, e prestes a começar a afundar no centro.</li>
+                    <li><strong>Uso:</strong> O poolish maturado é adicionado à massa final.</li>
+                    <li><strong>Benefícios:</strong> Promove a extensibilidade da massa, resultando em pães com bom volume e miolo mais aberto e leve. Contribui para um sabor suavemente adocicado e aromático, com notas de nozes. É frequentemente usado em baguettes e pães rústicos.</li>
+                </ul>
+                <h3>Modo de Fazer (Passo a Passo - Exemplo de Poolish):</h3>
+                <ol>
+                    <li><strong>Ingredientes para o Poolish:</strong>
+                        <ul>
+                            <li>150g de farinha de trigo (T65 ou similar)</li>
+                            <li>150g de água (temperatura ambiente ou ligeiramente morna, 20-24°C)</li>
+                            <li>Uma pitada minúscula de fermento biológico seco instantâneo (FSI) (cerca de 0.1g - 0.2g) OU um pequeno fragmento (0.3g - 0.6g) de fermento fresco.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Mistura:</strong> Numa tigela, misture bem a farinha, a água e o fermento até obter uma pasta líquida e homogénea, sem grumos de farinha.</li>
+                    <li><strong>Fermentação:</strong> Cubra a tigela com película aderente ou uma tampa. Deixe fermentar em temperatura ambiente.
+                        <ul>
+                            <li><strong>Fermentação mais rápida:</strong> 3-4 horas a 24-26°C.</li>
+                            <li><strong>Fermentação mais longa (preferível para sabor):</strong> 8-12 horas a 20-22°C, ou até 12-16 horas a 18-20°C.</li>
+                            <li>Pode também fermentar por 1-2 horas em temperatura ambiente e depois refrigerar por 8-24 horas. Retire do frigorífico 1-2 horas antes de usar.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Aspeto Final:</strong> O poolish estará pronto quando estiver cheio de bolhas na superfície, tiver aumentado de volume e começar a mostrar sinais de que vai "colapsar" ou afundar ligeiramente no centro. O aroma deve ser agradável, levemente alcoólico e frutado.</li>
+                    <li><strong>Uso:</strong> Adicione todo o poolish aos restantes ingredientes da massa final do pão conforme a receita.</li>
+                </ol>
+            `,
+            pate_fermentee_content: `
+                <h2 class="page-title">Pâte Fermentée (Massa Velha)</h2>
+                <p>A Pâte Fermentée, que em francês significa literalmente "massa fermentada" ou "massa velha", é simplesmente um pedaço de massa de pão já pronta (farinha, água, sal e fermento) de uma batelada anterior, que é reservado e adicionado à próxima massa.</p>
+                <h3>Características e Forma de Fazer (Conceitual):</h3>
+                <ul>
+                    <li><strong>Composição:</strong> É uma massa de pão completa, contendo todos os ingredientes básicos.</li>
+                    <li><strong>Preparo/Obtenção:</strong> Retira-se uma porção da massa após a primeira fermentação (ou mesmo após a sova) de um pão que se está a fazer.</li>
+                    <li><strong>Armazenamento:</strong> Pode ser refrigerada por 1 a 3 dias, permitindo que desenvolva mais sabor. Deve ser trazida à temperatura ambiente antes de ser incorporada na nova massa.</li>
+                    <li><strong>Uso:</strong> É incorporada à nova massa durante a fase de mistura, geralmente representando de 10% a 50% do peso da farinha da nova receita.</li>
+                    <li><strong>Benefícios:</strong> Adiciona complexidade de sabor (devido à fermentação prolongada), melhora a estrutura do glúten e a textura do miolo, e pode aumentar a vida de prateleira do pão. É uma técnica versátil, pois pode ser derivada de quase qualquer tipo de massa de pão.</li>
+                </ul>
+                <h3>Modo de Fazer (Passo a Passo):</h3>
+                <ol>
+                    <li><strong>Obtenção:</strong> Ao fazer uma receita de pão (por exemplo, um pão branco simples), após a sova e antes da primeira fermentação em bloco, retire uma porção da massa. A quantidade pode variar, mas geralmente entre 20% a 40% do peso total da farinha da receita <em>original</em> é uma boa referência para a quantidade de pâte fermentée a ser usada numa <em>futura</em> receita. (Ex: Se a sua receita original usa 500g de farinha, você pode guardar 100g a 200g de massa como pâte fermentée).</li>
+                    <li><strong>Primeira Fermentação (Opcional para a Pâte Fermentée):</strong> Pode deixar esta porção de massa fermentar ligeiramente em temperatura ambiente por 30-60 minutos, ou pode refrigerá-la diretamente.</li>
+                    <li><strong>Armazenamento:</strong> Coloque a pâte fermentée num recipiente levemente untado com óleo e com tampa, ou num saco de congelação. Guarde no frigorífico por até 3 dias. A massa continuará a fermentar lentamente e a desenvolver sabor.</li>
+                    <li><strong>Preparo para Uso:</strong> Retire a pâte fermentée do frigorífico cerca de 1-2 horas antes de fazer a nova massa de pão, para que atinja a temperatura ambiente.</li>
+                    <li><strong>Incorporação:</strong> Corte ou rasgue a pâte fermentée em pedaços pequenos. Adicione-a aos ingredientes da nova massa durante a fase de mistura, geralmente junto com a farinha e a água. Ajuste a quantidade de fermento e sal da nova receita, se necessário, pois a pâte fermentée já contém esses ingredientes (embora em pães caseiros, muitas vezes não se faz um ajuste rigoroso se a quantidade de pâte fermentée não for excessiva).</li>
+                    <li><strong>Proceda com a Nova Receita:</strong> Sove, fermente e asse a nova massa de pão como faria normalmente.</li>
+                </ol>
+            `,
+            esponja_content: `
+                <h2 class="page-title">Esponja (Pré-Fermento Rápido)</h2>
+                <p>A Esponja é um tipo de pré-fermento que geralmente envolve a mistura de uma parte da farinha total da receita, todo ou parte do líquido, e todo o fermento. É mais comum em receitas de pães enriquecidos ou quando se deseja acelerar um pouco o processo de desenvolvimento de sabor em comparação com um método direto simples.</p>
+                <h3>Características e Forma de Fazer (Conceitual):</h3>
+                <ul>
+                    <li><strong>Composição Típica:</strong> Uma porção da farinha da receita, uma porção do líquido (água, leite), e a quantidade total de fermento (ou uma grande parte dele). Às vezes, um pouco de açúcar pode ser adicionado para alimentar o fermento.</li>
+                    <li><strong>Preparo:</strong> Os ingredientes da esponja são misturados até formar uma massa que pode variar de relativamente líquida a mais pastosa, dependendo da receita.</li>
+                    <li><strong>Fermentação:</strong> A esponja fermenta por um período mais curto em comparação com biga ou poolish, geralmente de 30 minutos a algumas horas, em temperatura ambiente. O objetivo é que ela fique visivelmente ativa, borbulhante e aerada.</li>
+                    <li><strong>Uso:</strong> A esponja fermentada é então combinada com o restante dos ingredientes da receita (farinha, sal, açúcar, gorduras, etc.) para formar a massa final.</li>
+                    <li><strong>Benefícios:</strong> Ajuda a ativar o fermento vigorosamente, pode melhorar a textura e o sabor do pão (embora geralmente menos complexo que os pré-fermentos de longa duração), e pode ajudar a condicionar a farinha. É comum em pães doces, pães de hambúrguer e algumas receitas de pão de forma.</li>
+                </ul>
+                <h3>Modo de Fazer (Passo a Passo - Exemplo Genérico):</h3>
+                <ol>
+                    <li><strong>Ingredientes para a Esponja (Exemplo):</strong>
+                        <ul>
+                            <li>100g de farinha de trigo (parte da farinha total da receita)</li>
+                            <li>100ml de água ou leite morno (parte do líquido total da receita, aprox. 35-40°C)</li>
+                            <li>Toda a quantidade de fermento biológico (seco ou fresco) indicada na receita principal.</li>
+                            <li>Opcional: 1 colher de chá de açúcar (para alimentar o fermento, se a receita principal não tiver muito açúcar).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Mistura:</strong> Numa tigela, dissolva o fermento no líquido morno (com o açúcar, se usar). Deixe repousar por 5-10 minutos até espumar, se estiver a usar fermento seco ativo. Se for FSI, pode misturar diretamente com a farinha. Adicione a farinha da esponja e misture bem até formar uma massa homogénea, que pode ser líquida ou pastosa.</li>
+                    <li><strong>Fermentação:</strong> Cubra a tigela com um pano ou película aderente. Deixe fermentar em local morno (25-30°C) por um período que pode variar de 30 minutos a 1-2 horas, dependendo da quantidade de fermento e da temperatura.</li>
+                    <li><strong>Aspeto Final:</strong> A esponja estará pronta quando estiver visivelmente aerada, cheia de bolhas, tiver aumentado de volume e apresentar um aroma fermentado agradável. Pode até começar a afundar ligeiramente no centro, indicando pico de atividade.</li>
+                    <li><strong>Uso:</strong> Adicione a esponja fermentada aos restantes ingredientes da receita principal (o restante da farinha, sal, açúcar, gorduras, ovos, etc.). Misture e sove conforme as instruções da receita para formar a massa final do pão.</li>
+                </ol>
+            `,
+            creme_confeiteiro_detalhado_content: `
+                <h2 class="page-title">1. Creme de Confeiteiro (Crème Pâtissière)</h2>
+                <p><strong>Descrição:</strong> Um creme clássico da confeitaria francesa, espesso, rico e aveludado. É uma base fundamental para muitas outras preparações.</p>
+                <p><strong>Ingredientes Principais:</strong> Leite, gemas de ovo, açúcar, amido de milho (ou farinha) e baunilha.</p>
+                <h3>Modo de Preparo Detalhado:</h3>
+                <ol>
+                    <li><strong>Preparar a Mistura de Gemas:</strong> Numa tigela média, misture bem as gemas com o amido de milho e cerca de metade do açúcar, utilizando um batedor de arame (fouet) até obter uma mistura lisa e pálida.</li>
+                    <li><strong>Aquecer o Leite:</strong> Numa panela média, coloque o leite, a restante metade do açúcar e a vagem de baunilha (aberta e raspada, ou extrato/essência de baunilha). Leve ao lume médio até começar a ferver (pequenas bolhas nas laterais da panela). Não deixe ferver em cachão.</li>
+                    <li><strong>Temperagem das Gemas:</strong> Retire o leite do lume. Verta lentamente, em fio, cerca de metade do leite quente sobre a mistura de gemas, mexendo constantemente com o batedor de arame. Este processo (temperagem) aumenta gradualmente a temperatura das gemas, evitando que cozinhem e formem grumos.</li>
+                    <li><strong>Cozinhar o Creme:</strong> Verta a mistura de gemas temperadas de volta para a panela com o restante leite. Leve novamente ao lume brando ou médio-baixo. Cozinhe, mexendo constantemente com o batedor de arame, raspando bem o fundo e os cantos da panela para não agarrar nem formar grumos. Continue a mexer até o creme engrossar e começar a borbulhar. Deixe cozinhar por mais 1-2 minutos após levantar fervura, para cozinhar o amido e eliminar o sabor residual.</li>
+                    <li><strong>Finalizar e Arrefecer:</strong> Retire o creme do lume. Se estiver a usar manteiga, adicione-a agora, cortada em cubos, e misture até incorporar completamente (isto adiciona brilho e suavidade). Se estiver a usar extrato de baunilha e não a vagem, adicione-o neste momento.</li>
+                    <li>Transfira o creme imediatamente para uma tigela limpa ou um tabuleiro raso. Cubra diretamente a superfície do creme com película aderente, pressionando levemente para que a película toque em todo o creme. Isto evita a formação de uma pele na superfície.</li>
+                    <li>Deixe arrefecer à temperatura ambiente e depois leve ao frigorífico por pelo menos 2-3 horas, ou até estar completamente frio e firme.</li>
+                    <li><strong>Antes de Usar:</strong> Após arrefecido, o creme pode estar bastante firme. Retire-o do frigorífico e bata-o vigorosamente com um batedor de arame ou na batedeira com a pá (raquete) em velocidade baixa/média até ficar liso, cremoso e com a consistência desejada para utilização.</li>
+                </ol>
+                <p><strong>Usos Comuns:</strong> Recheio de éclairs (bombas), profiteroles, mil-folhas, tartes de fruta frescas, sonhos, bolas de Berlim, croissants recheados, bolos e como base para outros cremes (ex: Crème Diplomate, Crème Mousseline).</p>
+                <h4>Variações Comuns:</h4>
+                <ul>
+                    <li><strong>Chocolate:</strong> Após retirar o creme do lume (passo 5), adicione chocolate de boa qualidade picado (cerca de 100-150g para a receita base) e mexa até derreter e incorporar completamente.</li>
+                    <li><strong>Café:</strong> Infusione grãos de café no leite quente ou adicione 1-2 colheres de sopa de café instantâneo de boa qualidade dissolvido num pouco de água quente ao creme finalizado.</li>
+                    <li><strong>Cítricos:</strong> Adicione raspas de limão ou laranja ao leite durante o aquecimento. Pode também adicionar um pouco de sumo fresco ao creme já pronto e arrefecido, ajustando a consistência se necessário.</li>
+                </ul>
+            `,
+            chantilly_content: `
+                <h2 class="page-title">2. Chantilly (Crème Chantilly)</h2>
+                <p><strong>Descrição:</strong> Um creme leve e aerado, feito basicamente de natas batidas com açúcar.</p>
+                <p><strong>Ingredientes Principais:</strong> Natas frescas (com alto teor de gordura, mínimo 30-35%, idealmente 35%), açúcar (geralmente em pó/confeiteiro para melhor dissolução) e extrato de baunilha (opcional).</p>
+                <h3>Modo de Preparo Detalhado:</h3>
+                <ol>
+                    <li><strong>Arrefecer Tudo:</strong> Certifique-se de que as natas estão bem frias (diretamente do frigorífico). É útil também arrefecer a tigela da batedeira e as varas de bater no frigorífico ou congelador por 10-15 minutos antes de começar.</li>
+                    <li><strong>Bater as Natas:</strong> Verta as natas frias na tigela arrefecida. Comece a bater em velocidade média-baixa, aumentando gradualmente para média-alta à medida que as natas começam a engrossar.</li>
+                    <li><strong>Adicionar Açúcar e Baunilha:</strong> Quando as natas começarem a ganhar volume e a deixar rastos suaves do batedor (picos moles), adicione o açúcar em pó peneirado, aos poucos, e o extrato de baunilha (se usar).</li>
+                    <li><strong>Atingir Picos Firmes:</strong> Continue a bater em velocidade média-alta até que o creme forme picos firmes. Isto significa que, ao levantar as varas da batedeira, o pico de creme formado mantém a sua forma e não cai. Tenha cuidado para não bater em excesso, pois as natas podem talhar e transformar-se em manteiga.</li>
+                    <li><strong>Utilização:</strong> Use imediatamente ou guarde no frigorífico, coberto, por algumas horas. Se guardado, pode precisar de ser ligeiramente batido à mão antes de usar para recuperar a textura.</li>
+                </ol>
+                <p><strong>Usos Comuns:</strong> Cobertura e recheio de bolos, tortas, sobremesas, acompanhamento de frutas frescas, cafés, chocolates quentes, decoração de cupcakes e éclairs.</p>
+            `,
+            buttercream_content: `
+                <h2 class="page-title">3. Creme de Manteiga (Buttercream)</h2>
+                <p><strong>Descrição:</strong> Um creme rico e versátil, muito usado para cobrir e rechear bolos, bem como para decorações elaboradas. Existem vários tipos.</p>
+                <p><strong>Ingredientes Principais:</strong> Manteiga, açúcar (geralmente em pó/confeiteiro), um pouco de líquido (leite, natas) e aromatizantes (baunilha, chocolate, etc.). Algumas versões usam ovos ou merengue.</p>
+                <h3>Tipos Principais e Preparo Detalhado:</h3>
+                <h4>Americano (Simples):</h4>
+                <ol>
+                    <li><strong>Bater a Manteiga:</strong> Numa tigela, bata manteiga sem sal amolecida (à temperatura ambiente, mas não derretida) com a batedeira em velocidade média-alta até ficar clara e fofa (cerca de 3-5 minutos).</li>
+                    <li><strong>Adicionar Açúcar:</strong> Adicione gradualmente açúcar em pó peneirado (icing sugar/confectioners' sugar), batendo em velocidade baixa até incorporar, e depois aumente para média-alta. Raspe as laterais da tigela ocasionalmente.</li>
+                    <li><strong>Adicionar Líquido e Sabor:</strong> Adicione uma pequena quantidade de leite ou natas (1-2 colheres de sopa por cada 250g de manteiga, aproximadamente) e extrato de baunilha (ou outro sabor). Bata até ficar leve e homogéneo. Ajuste a consistência com mais açúcar (para engrossar) ou mais líquido (para diluir).</li>
+                </ol>
+                <h4>Merengue Suíço:</h4>
+                <ol>
+                    <li><strong>Aquecer Claras e Açúcar:</strong> Numa tigela resistente ao calor, sobre uma panela com água a ferver em lume brando (banho-maria, sem que a tigela toque na água), misture claras de ovo e açúcar granulado. Mexa constantemente com um batedor de arame até o açúcar dissolver completamente e a mistura atingir cerca de 70-75°C (ou até não sentir grãos de açúcar ao esfregar um pouco entre os dedos).</li>
+                    <li><strong>Bater o Merengue:</strong> Transfira a mistura para a tigela da batedeira (limpa e sem gordura). Bata em velocidade média-alta até formar um merengue brilhante, com picos firmes, e a tigela estar fria ao toque (pode levar 10-15 minutos).</li>
+                    <li><strong>Adicionar Manteiga:</strong> Com a batedeira em velocidade média-baixa, adicione manteiga sem sal amolecida (cortada em cubos) aos poucos, um cubo de cada vez, esperando que cada um se incorpore antes de adicionar o seguinte. A mistura pode parecer talhada ou separada em algum momento – continue a bater, que ela voltará a ficar homogénea e cremosa.</li>
+                    <li><strong>Finalizar:</strong> Depois de toda a manteiga incorporada, adicione extrato de baunilha ou outro saborizante. Bata por mais alguns minutos até o creme estar leve e sedoso.</li>
+                </ol>
+                <h4>Merengue Italiano:</h4>
+                <ol>
+                    <li><strong>Preparar Calda de Açúcar:</strong> Numa panela pequena, misture açúcar granulado com uma pequena quantidade de água (suficiente para humedecer o açúcar). Leve ao lume médio-alto, sem mexer, até atingir 115-118°C (ponto de bola mole).</li>
+                    <li><strong>Bater as Claras:</strong> Enquanto a calda aquece, comece a bater claras de ovo na batedeira em velocidade média até formarem picos moles.</li>
+                    <li><strong>Incorporar a Calda:</strong> Com a batedeira em velocidade média-baixa, verta a calda de açúcar quente em fio fino e contínuo sobre as claras em movimento, evitando que a calda caia diretamente sobre as varas da batedeira.</li>
+                    <li><strong>Bater o Merengue:</strong> Aumente a velocidade para média-alta e continue a bater até o merengue estar brilhante, com picos firmes, e a tigela arrefecer (pode levar 10-15 minutos).</li>
+                    <li><strong>Adicionar Manteiga e Finalizar:</strong> Siga os passos 3 e 4 do Merengue Suíço para adicionar a manteiga e finalizar.</li>
+                </ol>
+                <h4>Francês (Pâte à Bombe):</h4>
+                <ol>
+                    <li><strong>Preparar Calda de Açúcar:</strong> Como no Merengue Italiano, prepare uma calda de açúcar a 115-118°C.</li>
+                    <li><strong>Bater as Gemas:</strong> Enquanto a calda aquece, bata gemas de ovo na batedeira até ficarem pálidas e espessas.</li>
+                    <li><strong>Incorporar a Calda:</strong> Com a batedeira em velocidade média-baixa, verta a calda quente em fio sobre as gemas batidas.</li>
+                    <li><strong>Bater a Pâte à Bombe:</strong> Aumente a velocidade para média-alta e bata até a mistura (pâte à bombe) arrefecer completamente e ficar espessa e volumosa.</li>
+                    <li><strong>Adicionar Manteiga e Finalizar:</strong> Com a batedeira em velocidade média-baixa, adicione manteiga sem sal amolecida (cortada em cubos) aos poucos. Adicione extrato de baunilha e bata até ficar homogéneo e cremoso.</li>
+                </ol>
+                <h4>Alemão (Crème Mousseline com base de Confeiteiro):</h4>
+                <ol>
+                    <li><strong>Preparar Creme de Confeiteiro:</strong> Faça uma receita de creme de confeiteiro (ver secção 1) e deixe arrefecer completamente.</li>
+                    <li><strong>Bater Manteiga:</strong> Numa tigela separada, bata manteiga sem sal amolecida até ficar muito clara e fofa.</li>
+                    <li><strong>Combinar:</strong> Adicione o creme de confeiteiro arrefecido (que deve estar à mesma temperatura aproximada da manteiga) à manteiga batida, uma colher de cada vez, batendo bem após cada adição até o creme ficar leve, homogéneo e aerado.</li>
+                </ol>
+                <p><strong>Usos Comuns:</strong> Cobertura e recheio de bolos e cupcakes, decorações com bico de pasteleiro.</p>
+            `,
+            ganache_content: `
+                <h2 class="page-title">4. Ganache</h2>
+                <p><strong>Descrição:</strong> Uma mistura rica e sedosa de chocolate e natas. A sua consistência varia conforme a proporção dos ingredientes e a temperatura.</p>
+                <p><strong>Ingredientes Principais:</strong> Chocolate (negro, de leite ou branco) e natas (com teor de gordura entre 30-35%).</p>
+                <h3>Modo de Preparo Detalhado:</h3>
+                <ol>
+                    <li><strong>Picar o Chocolate:</strong> Pique finamente o chocolate e coloque-o numa tigela resistente ao calor.</li>
+                    <li><strong>Aquecer as Natas:</strong> Aqueça as natas numa panela pequena em lume médio até começarem a ferver nas bordas (não deixe ferver em cachão).</li>
+                    <li><strong>Verter e Repousar:</strong> Verta as natas quentes sobre o chocolate picado. Certifique-se de que todo o chocolate está submerso. Deixe repousar por 3-5 minutos sem mexer, para que o calor das natas derreta o chocolate.</li>
+                    <li><strong>Emulsionar:</strong> Com um batedor de arame pequeno ou uma espátula de silicone, comece a mexer suavemente a partir do centro da tigela, em pequenos círculos, expandindo gradualmente para as bordas. Continue a mexer até a mistura ficar completamente lisa, brilhante e homogénea. Evite incorporar muito ar.</li>
+                    <li><strong>Adicionar Extras (Opcional):</strong> Se desejar, adicione uma pequena quantidade de manteiga amolecida (para brilho e suavidade extra) ou um pouco de licor, extrato de baunilha, ou café solúvel após a ganache estar emulsionada.</li>
+                    <li><strong>Arrefecer/Usar:</strong>
+                        <ul>
+                            <li><strong>Para Cobertura Líquida (Glacê):</strong> Deixe arrefecer ligeiramente (até cerca de 30-35°C) para que engrosse um pouco mas ainda flua. Verta sobre bolos ou sobremesas.</li>
+                            <li><strong>Para Recheio ou Cobertura Espalhada:</strong> Deixe arrefecer à temperatura ambiente (ou no frigorífico, mexendo ocasionalmente) até atingir uma consistência espalhável, semelhante a manteiga de amendoim.</li>
+                            <li><strong>Para Trufas ou Ganache Batida:</strong> Refrigere até ficar firme (pode levar algumas horas). Para trufas, pode enrolar. Para ganache batida, depois de fria e firme, bata com a batedeira até ficar mais clara e fofa.</li>
+                        </ul>
+                    </li>
+                </ol>
+                <h4>Proporções Comuns (Chocolate : Natas):</h4>
+                <ul>
+                    <li><strong>Ganache para Cobertura Líquida/Glacê Fino:</strong> 1:2 (ex: 100g chocolate para 200g natas)</li>
+                    <li><strong>Ganache para Cobertura Espalhada/Recheio Macio:</strong> 1:1 (ex: 200g chocolate para 200g natas)</li>
+                    <li><strong>Ganache para Recheio Firme/Trufas:</strong> 2:1 (ex: 200g chocolate para 100g natas)</li>
+                    <li><em>Nota: Para chocolate de leite ou branco, geralmente usa-se uma proporção maior de chocolate para natas (ex: 2.5:1 ou 3:1) para obter uma consistência firme, pois contêm mais sólidos de leite e açúcar.</em></li>
+                </ul>
+                <p><strong>Usos Comuns:</strong> Cobertura e recheio de bolos, tortas, cupcakes, éclairs, trufas, bombons, molho para sobremesas.</p>
+            `,
+            lemon_curd_content: `
+                <h2 class="page-title">5. Creme de Limão (Lemon Curd)</h2>
+                <p><strong>Descrição:</strong> Um creme espesso, ácido e doce, com um intenso sabor a limão.</p>
+                <p><strong>Ingredientes Principais:</strong> Sumo e raspas de limão, gemas de ovo (ou ovos inteiros), açúcar e manteiga.</p>
+                <h3>Modo de Preparo Detalhado:</h3>
+                <ol>
+                    <li><strong>Preparar os Ingredientes:</strong> Raspe a casca dos limões (apenas a parte amarela, evitando a branca que é amarga) e esprema o sumo. Peneire o sumo para remover sementes.</li>
+                    <li><strong>Misturar Gemas e Açúcar:</strong> Numa tigela resistente ao calor, bata as gemas (e/ou ovos inteiros, conforme a receita) com o açúcar até obter uma mistura pálida e homogénea.</li>
+                    <li><strong>Adicionar Limão:</strong> Junte as raspas e o sumo de limão à mistura de gemas e açúcar. Misture bem.</li>
+                    <li><strong>Cozinhar em Banho-Maria (ou Lume Muito Brando):</strong> Coloque a tigela sobre uma panela com um pouco de água a ferver em lume brando (banho-maria), certificando-se de que o fundo da tigela não toca na água. Cozinhe, mexendo constantemente com um batedor de arame ou colher de pau, até o creme engrossar o suficiente para cobrir as costas de uma colher e um traço feito com o dedo permanecer (geralmente 82-85°C). Este processo pode levar 10-15 minutos. Não deixe ferver, para não talhar as gemas.</li>
+                    <li><strong>Adicionar Manteiga:</strong> Retire a tigela do lume. Adicione a manteiga fria, cortada em cubos pequenos, um ou dois cubos de cada vez, mexendo bem após cada adição até a manteiga derreter e incorporar completamente.</li>
+                    <li><strong>Coar (Opcional, mas Recomendado):</strong> Para um creme extra liso, passe o lemon curd ainda quente por um passador de rede fina para uma tigela limpa, para remover quaisquer pequenos grumos de ovo cozido ou raspas maiores.</li>
+                    <li><strong>Arrefecer:</strong> Cubra a superfície do creme diretamente com película aderente para evitar a formação de pele. Deixe arrefecer à temperatura ambiente e depois leve ao frigorífico por pelo menos 2-3 horas, ou até estar completamente frio e firme. O curd continuará a engrossar à medida que arrefece.</li>
+                </ol>
+                <p><strong>Usos Comuns:</strong> Recheio de tartes (tarte de limão merengada), bolos, cupcakes, scones, panquecas, para barrar em torradas.</p>
+            `,
+            fruit_fillings_content: `
+                <h2 class="page-title">6. Recheios de Fruta (Compotas, Geleias, Coulis)</h2>
+                <p><strong>Descrição:</strong> Preparações à base de frutas, que podem variar em textura de pedaços de fruta a purés lisos.</p>
+                <p><strong>Ingredientes Principais:</strong> Frutas (morangos, frutos vermelhos, maçã, pêssego, etc.), açúcar, por vezes sumo de limão (para acidez e ajudar na gelificação) e espessantes como pectina ou amido de milho (para compotas mais espessas).</p>
+                <h3>Modo de Preparo Detalhado (Exemplo para Compota de Frutos Vermelhos):</h3>
+                <ol>
+                    <li><strong>Preparar a Fruta:</strong> Lave e prepare os frutos vermelhos (morangos podem ser cortados, framboesas e mirtilos inteiros).</li>
+                    <li><strong>Macerar (Opcional):</strong> Numa tigela, misture os frutos com o açúcar (a quantidade varia conforme a doçura da fruta e preferência, geralmente 1 parte de açúcar para 2-4 partes de fruta em peso) e sumo de limão. Deixe repousar por 30 minutos a algumas horas para que a fruta liberte os seus sucos.</li>
+                    <li><strong>Cozinhar:</strong> Transfira a mistura de fruta para uma panela de fundo grosso. Leve a lume médio, mexendo ocasionalmente, até o açúcar dissolver e a mistura começar a ferver.</li>
+                    <li><strong>Reduzir e Engrossar:</strong> Reduza o lume para médio-baixo e cozinhe, mexendo com frequência para não agarrar, até a compota engrossar e atingir a consistência desejada. O tempo varia conforme a fruta e a quantidade (geralmente 15-40 minutos).
+                        <ul>
+                            <li><strong>Teste de Ponto:</strong> Para verificar o ponto, coloque uma pequena quantidade num prato frio; se não escorrer muito, está pronta.</li>
+                            <li><strong>Para Geleias:</strong> O processo é similar, mas geralmente usa-se mais açúcar e pectina, e cozinha-se até atingir o ponto de gelificação (cerca de 105°C).</li>
+                            <li><strong>Para Coulis:</strong> Cozinhe a fruta brevemente com um pouco de açúcar (ou use crua), depois triture e coe para obter um molho liso.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Espessante (Opcional):</strong> Se desejar uma compota mais espessa rapidamente, pode dissolver uma pequena quantidade de amido de milho num pouco de água fria e adicionar à compota nos últimos minutos de cozedura, mexendo até engrossar.</li>
+                    <li><strong>Arrefecer e Armazenar:</strong> Retire do lume, deixe arrefecer e guarde em frascos esterilizados no frigorífico.</li>
+                </ol>
+                <p><strong>Usos Comuns:</strong> Recheio de tortas, bolos (entre camadas), croissants, pães doces, folhados, topping para cheesecakes e sobremesas.</p>
+            `,
+            creme_belga_content: `
+                <h2 class="page-title">7. Creme Belga</h2>
+                <p><strong>Descrição:</strong> Um creme branco, suave e versátil, popular em muitas sobremesas e recheios de bolo, especialmente no Brasil.</p>
+                <p><strong>Ingredientes Principais:</strong> Leite condensado, leite, gemas de ovo, amido de milho e, por vezes, natas ou essência de baunilha.</p>
+                <h3>Modo de Preparo Detalhado:</h3>
+                <ol>
+                    <li><strong>Misturar Ingredientes Secos e Gemas:</strong> Numa tigela, misture o amido de milho com um pouco do leite frio até dissolver. Adicione as gemas peneiradas e misture bem.</li>
+                    <li><strong>Aquecer Líquidos:</strong> Numa panela, coloque o leite condensado, o restante do leite e a mistura de gemas com amido.</li>
+                    <li><strong>Cozinhar o Creme:</strong> Leve ao lume médio-baixo, mexendo constantemente com um batedor de arame ou colher de pau, raspando o fundo para não agarrar. Cozinhe até o creme engrossar e começar a borbulhar. Deixe cozinhar por mais 1-2 minutos, mexendo sempre, para cozinhar o amido.</li>
+                    <li><strong>Adicionar Sabor e Natas (Opcional):</strong> Retire do lume. Se desejar, adicione essência de baunilha. Se a receita pedir natas, podem ser incorporadas neste momento (se for para uma textura mais rica) ou depois de arrefecido e batido (para uma textura mais leve, se as natas forem batidas em chantilly).</li>
+                    <li><strong>Arrefecer:</strong> Transfira para uma tigela, cubra com película aderente em contacto com a superfície do creme e deixe arrefecer completamente no frigorífico.</li>
+                </ol>
+                <p><strong>Usos Comuns:</strong> Recheio de bolos, tortas, pavês, sobremesas em taça. Combina bem com frutas.</p>
+            `,
+            creme_leite_ninho_content: `
+                <h2 class="page-title">8. Creme de Leite Ninho (ou Leite em Pó)</h2>
+                <p><strong>Descrição:</strong> Um creme muito popular, especialmente no Brasil, com o sabor característico do leite em pó.</p>
+                <p><strong>Ingredientes Principais:</strong> Leite condensado, natas, leite em pó (Ninho ou similar), manteiga (opcional).</p>
+                <h3>Modo de Preparo Detalhado (Versão Cozida):</h3>
+                <ol>
+                    <li><strong>Misturar Ingredientes Base:</strong> Numa panela, misture bem o leite condensado, o leite em pó e a manteiga (se usar).</li>
+                    <li><strong>Cozinhar:</strong> Leve ao lume brando, mexendo constantemente com uma espátula ou colher de pau, raspando bem o fundo e as laterais da panela para não queimar. Cozinhe até obter o ponto desejado – para recheio mais mole, até começar a desgrudar do fundo da panela (semelhante a ponto de brigadeiro mole); para recheio mais firme, cozinhe um pouco mais.</li>
+                    <li><strong>Arrefecer Parcialmente:</strong> Retire do lume e deixe arrefecer um pouco, mexendo ocasionalmente para não criar película.</li>
+                    <li><strong>Incorporar Natas:</strong> Adicione as natas (sem soro, se forem de lata, ou natas frescas) e misture bem até obter um creme homogéneo. Se desejar uma textura mais leve, pode usar natas batidas em chantilly e incorporar delicadamente.</li>
+                    <li><strong>Refrigerar:</strong> Leve ao frigorífico para firmar antes de usar.</li>
+                </ol>
+                <p><strong>Usos Comuns:</strong> Recheio e cobertura de bolos, cupcakes, ovos de Páscoa, sobremesas diversas.</p>
+            `,
+            doce_leite_content: `
+                <h2 class="page-title">9. Doce de Leite</h2>
+                <p><strong>Descrição:</strong> Um doce espesso e caramelizado, feito a partir da cozedura lenta de leite e açúcar. Muito popular na América Latina e também em Portugal.</p>
+                <p><strong>Ingredientes Principais:</strong> Leite integral e açúcar. Algumas receitas podem incluir bicarbonato de sódio (para cor e textura) ou extrato de baunilha.</p>
+                <h3>Modo de Preparo Detalhado (Método Tradicional):</h3>
+                <ol>
+                    <li><strong>Misturar Ingredientes:</strong> Numa panela grande e de fundo grosso (para evitar que queime), misture o leite e o açúcar (geralmente na proporção de 1 litro de leite para 200-250g de açúcar, ajuste a gosto). Se usar, adicione uma pitada de bicarbonato de sódio e a baunilha.</li>
+                    <li><strong>Cozinhar Lentamente:</strong> Leve ao lume médio-baixo. Deixe levantar fervura, mexendo ocasionalmente para dissolver o açúcar.</li>
+                    <li><strong>Reduzir e Mexer:</strong> Assim que ferver, reduza o lume para o mínimo possível, de forma a que a mistura borbulhe muito suavemente. Cozinhe por um longo período (pode levar de 1.5 a 3 horas, ou mais, dependendo da quantidade), mexendo frequentemente com uma colher de pau, especialmente o fundo da panela, para evitar que agarre e queime.</li>
+                    <li><strong>Observar a Mudança de Cor e Consistência:</strong> À medida que a água do leite evapora, a mistura irá reduzir de volume, engrossar e escurecer, adquirindo uma cor de caramelo.</li>
+                    <li><strong>Ponto:</strong> O doce de leite está pronto quando atinge a cor e a consistência desejadas. Para um doce de leite mais cremoso para recheios, retire um pouco antes de ficar excessivamente grosso. Um teste é colocar uma pequena porção num prato frio; se não escorrer muito, está no ponto.</li>
+                    <li><strong>Arrefecer:</strong> Retire do lume e deixe arrefecer, mexendo ocasionalmente enquanto arrefece para evitar a formação de uma película grossa. Guarde em frascos esterilizados no frigorífico.</li>
+                </ol>
+                <h3>Modo de Preparo (Com Leite Condensado na Panela de Pressão - <strong>ATENÇÃO: MÉTODO COM RISCOS SE NÃO FOR FEITO CORRETAMENTE</strong>):</h3>
+                <ol>
+                    <li>Retire o rótulo da lata de leite condensado.</li>
+                    <li>Coloque a lata fechada numa panela de pressão. Cubra completamente com água (a água deve ultrapassar a lata em pelo menos 2-3 dedos).</li>
+                    <li>Feche a panela de pressão e leve ao lume alto. Quando começar a apitar (ganhar pressão), reduza o lume para o mínimo e cozinhe por 30-45 minutos (30 min para mais claro e mole, 45 min para mais escuro e firme).</li>
+                    <li><strong>MUITO IMPORTANTE:</strong> Desligue o lume e deixe a pressão sair <strong>COMPLETAMENTE</strong> da panela <strong>ANTES</strong> de abrir. Nunca tente arrefecer a panela debaixo de água fria.</li>
+                    <li>Retire a lata com cuidado (estará muito quente) e deixe-a arrefecer <strong>COMPLETAMENTE</strong> antes de abrir. Abrir a lata quente pode causar queimaduras graves devido à pressão interna.</li>
+                </ol>
+                <p><strong>Usos Comuns:</strong> Recheio de bolos, tortas, churros, croissants, pães doces, alfajores, ou consumido puro.</p>
+            `
+        };
+
+        const defaultBasicRecipesData = [
+            { name: "Pão Carteira", category: "basicos", description: "Pão pequeno e prático, ideal para lanches rápidos.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Água", percentage: 58, weightOriginal: "290g"}, {item: "Fermento Biológico Seco", percentage: 1, weightOriginal: "5g"}, {item: "Açúcar", percentage: 4, weightOriginal: "20g"}, {item: "Sal", percentage: 2, weightOriginal: "10g"}, {item: "Óleo Vegetal", percentage: 5, weightOriginal: "25g"}] }, instructions: ["Misture os ingredientes secos.", "Adicione os líquidos aos poucos, sovando até obter uma massa lisa.", "Primeira fermentação: 1 hora ou até dobrar.", "Divida em porções de 50-60g, modele em formato oval achatado.", "Dobre ao meio como uma carteira.", "Segunda fermentação: 30-40 minutos.", "Asse em forno pré-aquecido a 200°C por 15-20 minutos."], tips: ["Pincele com gema para dourar.", "Pode ser recheado antes de dobrar."] },
+            { name: "Pão de Forma", category: "basicos", description: "O clássico pão para sanduíches e torradas, com miolo macio.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Leite Morno", percentage: 60, weightOriginal: "300ml"}, {item: "Fermento Biológico Seco", percentage: 1.4, weightOriginal: "7g"}, {item: "Açúcar", percentage: 5, weightOriginal: "25g"}, {item: "Sal", percentage: 2, weightOriginal: "10g"}, {item: "Manteiga Amolecida", percentage: 6, weightOriginal: "30g"}] }, instructions: ["Misture os ingredientes, sovando bem até a massa ficar elástica.", "Primeira fermentação: 1 hora.", "Modele em um retângulo, enrole como um rocambole e coloque em forma de pão de forma untada.", "Segunda fermentação: 45-60 minutos, até quase atingir a borda da forma.", "Asse em forno pré-aquecido a 180°C por 30-35 minutos."], tips: ["Para uma casca mais macia, pincele com manteiga derretida após assar.", "Deixe esfriar completamente antes de fatiar."] },
+            { name: "Pão de Ervas", category: "basicos", description: "Pão saboroso com um mix de ervas finas, perfeito para acompanhar refeições.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Água Morna", percentage: 60, weightOriginal: "300ml"}, {item: "Fermento Biológico Seco", percentage: 1.4, weightOriginal: "7g"}, {item: "Azeite de Oliva", percentage: 6, weightOriginal: "30ml"}, {item: "Sal", percentage: 2, weightOriginal: "10g"}, {item: "Mix de Ervas Finas Secas (orégano, manjericão, tomilho, alecrim)", percentage: null, weightOriginal: "2 colheres de sopa"}] }, instructions: ["Misture todos os ingredientes e sove até obter uma massa homogênea.", "Primeira fermentação: 1 hora.", "Modele no formato desejado (filão, bolas).", "Segunda fermentação: 40-50 minutos.", "Faça cortes na superfície e asse em forno pré-aquecido a 200°C por 25-30 minutos."], tips: ["Use ervas frescas picadas para um sabor mais intenso.", "Pode adicionar queijo parmesão ralado à massa."] },
+            { name: "Pão Joelho", category: "basicos", description: "Salgado popular, uma massa macia recheada, geralmente com queijo e presunto.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Leite Morno", percentage: 50, weightOriginal: "250ml"}, {item: "Ovo", percentage: 10, weightOriginal: "1 unidade (50g)"}, {item: "Açúcar", percentage: 3, weightOriginal: "1 colher de sopa (15g)"}, {item: "Sal", percentage: 1, weightOriginal: "1 colher de chá (5g)"}, {item: "Fermento Biológico Seco", percentage: 2, weightOriginal: "10g"}, {item: "Manteiga Amolecida", percentage: 6, weightOriginal: "2 colheres de sopa (30g)"}], recheio: [{item:"Queijo Mussarela Fatiado", weightOriginal:"200g"}, {item:"Presunto Fatiado", weightOriginal:"200g"}, {item:"Orégano", weightOriginal:"a gosto"}] }, instructions: ["Prepare a massa misturando todos os ingredientes e sovando.", "Primeira fermentação: 45 minutos.", "Abra a massa em um retângulo, distribua o recheio.", "Enrole como rocambole, corte fatias de 2-3 cm.", "Segunda fermentação: 30 minutos.", "Pincele com gema e asse a 180°C por 20-25 minutos."], tips: ["Varie os recheios: frango desfiado, calabresa, etc.", "Feche bem as bordas para o recheio não vazar."] },
+            { name: "Pão Sovado", category: "basicos", description: "Pão caseiro tradicional, conhecido pela sua maciez e por exigir uma boa sova.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "1000g", isBaseFlour: true}, {item: "Leite Morno", percentage: 40, weightOriginal: "400ml"}, {item: "Ovos", percentage: 10, weightOriginal: "2 unidades (100g)"}, {item: "Açúcar", percentage: 6, weightOriginal: "4 colheres de sopa (60g)"}, {item: "Sal", percentage: 1.5, weightOriginal: "1 colher de sopa (15g)"}, {item: "Fermento Biológico Fresco", percentage: 3, weightOriginal: "30g"}, {item: "Manteiga ou Margarina Amolecida", percentage: 4.5, weightOriginal: "3 colheres de sopa (45g)"}] }, instructions: ["Misture os ingredientes, sove por pelo menos 15-20 minutos até a massa ficar bem elástica e lisa.", "Primeira fermentação: 1 hora.", "Modele os pães no formato desejado.", "Segunda fermentação: 40-60 minutos.", "Asse em forno pré-aquecido a 180°C por cerca de 35-40 minutos."], tips: ["A sova longa é o segredo deste pão.", "Pode ser feito em formato de trança."] },
+            { name: "Broa de Milho com Erva Doce", category: "basicos", description: "Broa tradicional brasileira, com fubá e o toque da erva-doce.", ingredients: { finalDough: [{item: "Fubá Mimoso", percentage: 50, weightOriginal: "250g", isBaseFlourPart: true}, {item: "Farinha de Trigo", percentage: 50, weightOriginal: "250g", isBaseFlourPart: true}, {item: "Leite Morno", percentage: 40, weightOriginal: "200ml"}, {item: "Ovos", percentage: 20, weightOriginal: "2 unidades (100g)"}, {item: "Açúcar", percentage: 30, weightOriginal: "150g"}, {item: "Manteiga Derretida", percentage: 10, weightOriginal: "50g"}, {item: "Fermento em Pó Químico", percentage: null, weightOriginal: "1 colher de sopa"}, {item: "Erva-Doce", percentage: null, weightOriginal: "1 colher de sopa"}, {item: "Sal", percentage: null, weightOriginal: "1 pitada"}] }, instructions: ["Misture os ingredientes secos.", "Adicione os ovos, leite e manteiga, misturando bem.", "A massa fica mais mole, não precisa sovar.", "Despeje em forma untada e enfarinhada.", "Asse em forno pré-aquecido a 180°C por 30-40 minutos."], tips: ["Polvilhe fubá por cima antes de assar para um visual rústico.", "Deliciosa com café."] },
+            { name: "Palito de Calabresa", category: "basicos", description: "Petisco saboroso, massa de pão enrolada com calabresa.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "300g", isBaseFlour: true}, {item: "Água Morna", percentage: 50, weightOriginal: "150ml"}, {item: "Fermento Biológico Seco", percentage: 1.67, weightOriginal: "5g"}, {item: "Azeite", percentage: 6.67, weightOriginal: "2 colheres de sopa (20ml)"}, {item: "Sal", percentage: 0.83, weightOriginal: "1/2 colher de chá (2.5g)"}], recheio: [{item:"Linguiça Calabresa moída ou picada fina", weightOriginal:"150g"}, {item:"Queijo Parmesão ralado (opcional)", weightOriginal:"para polvilhar"}] }, instructions: ["Prepare a massa e deixe crescer por 30 minutos.", "Abra a massa fina, espalhe a calabresa.", "Enrole e corte em palitos.", "Deixe crescer por mais 20 minutos.", "Asse a 200°C por 15-20 minutos."], tips: ["Pincele com azeite antes de assar.", "Pode adicionar pimenta calabresa ao recheio."] },
+            { name: "Massa Doce Básica", category: "basicos", description: "Uma massa versátil para diversos pães doces, como roscas e pãezinhos recheados.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Leite Morno", percentage: 40, weightOriginal: "200ml"}, {item: "Ovos", percentage: 20, weightOriginal: "2 unidades (100g)"}, {item: "Açúcar", percentage: 20, weightOriginal: "100g"}, {item: "Manteiga Amolecida", percentage: 15, weightOriginal: "75g"}, {item: "Fermento Biológico Seco", percentage: 2, weightOriginal: "10g"}, {item: "Sal", percentage: 0.5, weightOriginal: "1 pitada (2.5g)"}, {item:"Raspas de Limão ou Laranja (opcional)", weightOriginal:"a gosto"}] }, instructions: ["Misture os ingredientes e sove até obter uma massa macia e elástica.", "Primeira fermentação: 1 hora.", "Use para modelar roscas, sonhos, pães recheados, etc.", "Segunda fermentação: conforme a receita específica.", "Asse de acordo com o tipo de pão doce."], tips: ["Esta massa pode ser a base para muitas criações.", "Aromatize com baunilha, canela ou outras especiarias."] },
+            { name: "Pão de Leite (Básico)", category: "basicos", description: "Pãezinhos muito macios e levemente adocicados, perfeitos para o café da manhã ou lanche.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Leite Morno", percentage: 50, weightOriginal: "250ml"}, {item: "Açúcar", percentage: 10, weightOriginal: "50g"}, {item: "Manteiga Amolecida", percentage: 10, weightOriginal: "50g"}, {item: "Ovo", percentage: 10, weightOriginal: "1 unidade (50g)"}, {item: "Fermento Biológico Seco", percentage: 1.4, weightOriginal: "7g"}, {item: "Sal", percentage: 1, weightOriginal: "5g"}] }, instructions: ["Misture todos os ingredientes e sove bem até a massa ficar lisa e elástica.", "Primeira fermentação: 1 hora.", "Divida em porções de 50g, modele bolinhas.", "Segunda fermentação: 30-40 minutos em assadeira untada.", "Pincele com gema e asse em forno pré-aquecido a 180°C por 20-25 minutos."], tips: ["Para um brilho extra, pincele com leite condensado diluído em água após assar.", "Ótimo para sanduíches pequenos."] },
+            { name: "Lua de Mel", category: "basicos", description: "Doce tradicional de padaria, uma massa fofa recheada com creme e coberta com coco.", ingredients: { massa: [{item:"Usar a 'Massa Doce Básica'"}], recheio: [{item:"Creme de Confeiteiro (ver receita)"}], cobertura: [{item:"Leite Condensado", weightOriginal:"para pincelar"}, {item:"Coco Ralado Seco", weightOriginal:"para polvilhar"}] }, instructions: ["Prepare a Massa Doce Básica.", "Após a primeira fermentação, divida em porções, abra discos, recheie com o Creme de Confeiteiro frio e feche formando meias-luas ou bolinhas.", "Deixe crescer novamente.", "Asse até dourar. Após esfriar um pouco, pincele com leite condensado e passe no coco ralado."], tips: ["Certifique-se de que o creme esteja frio para não derreter a massa.", "Varie o recheio com doce de leite ou goiabada."] },
+            { name: "Sonho", category: "basicos", description: "Clássico doce frito ou assado, recheado com creme e polvilhado com açúcar.", ingredients: { massa: [{item:"Usar a 'Massa Doce Básica'"}], recheio: [{item:"Creme de Confeiteiro (ver receita)"}], finalizacao: [{item:"Açúcar de Confeiteiro ou Cristal", weightOriginal:"para polvilhar"}] }, instructions: ["Prepare a Massa Doce Básica.", "Após a primeira fermentação, abra a massa, corte discos e deixe crescer novamente.", "Frite em óleo quente até dourar ou asse em forno médio.", "Depois de frio, corte ao meio e recheie com o creme. Polvilhe com açúcar."], tips: ["Para fritar, o óleo não deve estar excessivamente quente para que o sonho cozinhe por dentro.", "Se assar, pincele com gema antes de levar ao forno."] },
+            { name: "Rosca de Coco", category: "basicos", description: "Rosca macia e saborosa com recheio e cobertura de coco.", ingredients: { massa: [{item:"Usar a 'Massa Doce Básica'"}], recheioCobertura: [{item:"Leite Condensado", weightOriginal:"1 lata"}, {item:"Coco Ralado Seco ou Fresco", weightOriginal:"100-150g"}, {item:"Manteiga (opcional)", weightOriginal:"1 colher de sopa"}] }, instructions: ["Prepare a Massa Doce Básica.", "Após a primeira fermentação, abra a massa em um retângulo.", "Misture os ingredientes do recheio/cobertura (reserve um pouco para cobrir). Espalhe sobre a massa.", "Enrole como rocambole, corte fatias ou modele como uma trança/rosca.", "Deixe crescer novamente.", "Pincele com gema, cubra com o restante do recheio de coco e asse a 180°C até dourar."], tips: ["Umedecer o coco ralado com um pouco de leite de coco antes de usar no recheio o deixa mais macio.", "Pode adicionar leite de coco à mistura do recheio."] },
+            { name: "Pão de Batata", category: "basicos", description: "Pão extremamente macio e saboroso, graças à adição de batata na massa.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Batata Cozida e Amassada (fria)", percentage: 40, weightOriginal: "200g"}, {item: "Leite Morno", percentage: 30, weightOriginal: "150ml (ajustar)"}, {item: "Ovo", percentage: 10, weightOriginal: "1 unidade (50g)"}, {item: "Açúcar", percentage: 4, weightOriginal: "2 colheres de sopa (20g)"}, {item: "Sal", percentage: 2, weightOriginal: "1 colher de chá (10g)"}, {item: "Fermento Biológico Seco", percentage: 2, weightOriginal: "10g"}, {item: "Manteiga Amolecida", percentage: 10, weightOriginal: "50g"}] }, instructions: ["Misture os ingredientes e sove até a massa ficar bem macia e elástica (a massa é naturalmente mais úmida).", "Primeira fermentação: 1 hora.", "Modele pãezinhos ou um pão maior.", "Segunda fermentação: 40-50 minutos.", "Pincele com gema e asse a 180°C por 25-30 minutos para pãezinhos, ou mais para pão maior."], tips: ["Use a batata ainda morna, mas não quente, para amassar e incorporar melhor.", "Ótimo para rechear com catupiry ou outros queijos cremosos."] },
+            { name: "Pão de Canela (Cinnamon Roll)", category: "basicos", description: "Pãezinhos enrolados com um delicioso recheio de manteiga, açúcar e canela.", ingredients: { massa: [{item:"Usar a 'Massa Doce Básica'"}], recheio: [{item:"Manteiga Amolecida", weightOriginal:"100g"}, {item:"Açúcar Mascavo ou Refinado", weightOriginal:"150g"}, {item:"Canela em Pó", weightOriginal:"2-3 colheres de sopa"}], coberturaOpcional: [{item:"Cream Cheese Frosting ou Glacê de Açúcar"}] }, instructions: ["Prepare a Massa Doce Básica.", "Após a primeira fermentação, abra a massa em um retângulo.", "Misture os ingredientes do recheio e espalhe sobre a massa.", "Enrole como rocambole e corte fatias de 2-3 cm de espessura.", "Coloque as fatias em assadeira untada, próximas umas das outras.", "Segunda fermentação: 30-40 minutos.", "Asse a 180°C por 20-25 minutos. Cubra com glacê enquanto ainda morno, se desejar."], tips: ["Adicionar nozes picadas ou uvas passas ao recheio é uma boa variação.", "Não deixe assar demais para que fiquem macios."] },
+            { name: "Pão Integral (Básico)", category: "basicos", description: "Uma receita simples de pão integral para o dia a dia, saudável e saboroso.", ingredients: { finalDough: [{item: "Farinha de Trigo Integral", percentage: 60, weightOriginal: "300g", isBaseFlourPart: true}, {item: "Farinha de Trigo Branca", percentage: 40, weightOriginal: "200g", isBaseFlourPart: true}, {item: "Água Morna", percentage: 63, weightOriginal: "315ml (aprox.)"}, {item: "Mel ou Açúcar Mascavo", percentage: 4, weightOriginal: "2 colheres de sopa (20g)"}, {item: "Óleo Vegetal ou Azeite", percentage: 6, weightOriginal: "3 colheres de sopa (30ml)"}, {item: "Fermento Biológico Seco", percentage: 1.4, weightOriginal: "7g"}, {item: "Sal", percentage: 2, weightOriginal: "10g"}] }, instructions: ["Misture os ingredientes secos. Adicione os líquidos e o mel/açúcar.", "Sove bem por 10-15 minutos.", "Primeira fermentação: 1 a 1h30.", "Modele como pão de forma ou filão.", "Segunda fermentação: 45-60 minutos.", "Asse em forno pré-aquecido a 200°C por 30-40 minutos."], tips: ["A farinha integral absorve mais água, ajuste a quantidade se necessário.", "Pode adicionar sementes (linhaça, girassol, gergelim) à massa."] },
+            { name: "Pão para Hambúrguer", category: "basicos", description: "Pãezinhos macios e levemente adocicados, perfeitos para hambúrgueres caseiros.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Leite Morno", percentage: 50, weightOriginal: "250ml"}, {item: "Ovo", percentage: 10, weightOriginal: "1 unidade (50g)"}, {item: "Açúcar", percentage: 4, weightOriginal: "2 colheres de sopa (20g)"}, {item: "Sal", percentage: 2, weightOriginal: "1 colher de chá (10g)"}, {item: "Fermento Biológico Seco", percentage: 2, weightOriginal: "10g"}, {item: "Manteiga Amolecida", percentage: 10, weightOriginal: "50g"}], cobertura: [{item:"Gema para pincelar"}, {item:"Sementes de Gergelim"}] }, instructions: ["Misture os ingredientes e sove até a massa ficar lisa e elástica.", "Primeira fermentação: 1 hora.", "Divida em porções de 80-100g, modele bolas achatadas.", "Segunda fermentação: 30-40 minutos.", "Pincele com gema, polvilhe gergelim e asse a 200°C por 15-20 minutos."], tips: ["Para um pão mais rico, use duas gemas em vez de um ovo inteiro.", "Deixe espaço entre os pães na assadeira para crescerem."] },
+            { name: "Pão Hot Dog", category: "basicos", description: "Pãezinhos alongados e macios, ideais para cachorros-quentes.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Leite Morno", percentage: 48, weightOriginal: "240ml"}, {item: "Ovo", percentage: 10, weightOriginal: "1 unidade (50g)"}, {item: "Açúcar", percentage: 6, weightOriginal: "30g"}, {item: "Sal", percentage: 1.6, weightOriginal: "8g"}, {item: "Fermento Biológico Seco", percentage: 1.4, weightOriginal: "7g"}, {item: "Manteiga Amolecida", percentage: 8, weightOriginal: "40g"}] }, instructions: ["Siga o mesmo processo do Pão para Hambúrguer para a massa.", "Na modelagem, forme cilindros de aproximadamente 15cm de comprimento.", "Segunda fermentação e cocção similares ao pão de hambúrguer, ajustando o tempo se necessário."], tips: ["Coloque os pães próximos uns dos outros na assadeira para que cresçam para cima, formando laterais retas.", "Pode pincelar com manteiga derretida após assar."] },
+            { name: "Pão Petrópolis", category: "basicos", description: "Pão doce tradicional, fofo, com uma cobertura açucarada característica.", ingredients: { massa: [{item:"Usar a 'Massa Doce Básica'"}], cobertura: [{item:"Açúcar de Confeiteiro", weightOriginal:"1 xícara"}, {item:"Leite ou Suco de Limão", weightOriginal:"2-3 colheres de sopa (para fazer um glacê)"}, {item:"Coco ralado fino (opcional)", weightOriginal:"para polvilhar"}] }, instructions: ["Prepare a Massa Doce Básica.", "Após a primeira fermentação, modele pães redondos ou em formato de filão.", "Segunda fermentação: até dobrar.", "Asse a 180°C até dourar.", "Enquanto o pão esfria um pouco, prepare o glacê misturando o açúcar de confeiteiro com o líquido aos poucos, até obter uma consistência espessa mas fluida.", "Despeje o glacê sobre os pães ainda mornos. Polvilhe coco se desejar."], tips: ["O glacê pode ser mais ralo ou mais grosso conforme a preferência.", "Tradicionalmente, a cobertura é bem generosa."] },
+            { name: "Pão Francês (Cacetinho/Pão de Sal)", category: "basicos", description: "O pão mais popular no Brasil, com casca crocante e miolo macio. Requer técnica e, idealmente, vapor no forno.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Água Gelada", percentage: 58, weightOriginal: "290ml (aprox.)"}, {item: "Fermento Biológico Fresco", percentage: 3, weightOriginal: "15g"}, {item: "Sal", percentage: 2, weightOriginal: "10g"}, {item: "Melhorador de Farinha (opcional)", percentage: 1, weightOriginal: "5g"}, {item:"Açúcar (pitada)", percentage: 1, weightOriginal:"5g"}] }, instructions: ["Misture os ingredientes, sovando bem até ponto de véu. Massa firme.", "Primeira fermentação (curta): 20-30 minutos.", "Divida em porções de 50-60g. Modele cilindros curtos.", "Descanso de mesa: 10-15 minutos.", "Abra cada cilindro e enrole apertado. Alongue pontas.", "Coloque em assadeiras polvilhadas com fubá, costura para baixo.", "Segunda fermentação (estufa): 40-60 minutos.", "Faça um corte longitudinal profundo (pestana).", "Asse em forno muito quente (220-250°C) com vapor, 15-20 minutos."], tips: ["Água gelada controla temperatura da massa.", "Vapor é essencial para crocância e pestana.", "Corte com lâmina afiada, em ângulo."] }
+        ];
+        
+        const defaultBuffetRecipesData = [
+            { name: "Baguete Tradicional", category: "buffet", description: "Um clássico da panificação francesa...", ingredients: { poolish: [ { item: "Farinha de Trigo", percentage: 100, weightOriginal: "220g", isBaseFlourPart: true }, { item: "Água (aprox. 21°C)", percentage: 100, weightOriginal: "220g" }, { item: "Fermento Fresco OU", percentage: 0.12, weightOriginal: "0.26g" }, { item: "FSI", percentage: 0.04, weightOriginal: "0.08g" } ], finalDough: [ { item: "Farinha de Trigo", percentage: 100, weightOriginal: "440g", isBaseFlour: true }, { item: "Água", percentage: 52.24, weightOriginal: "230g" }, { item: "Sal", percentage: 2.99, weightOriginal: "13g" }, { item: "Fermento Fresco OU", percentage: 2.1, weightOriginal: "9.2g" }, { item: "FSI", percentage: 0.7, weightOriginal: "3.1g" }, { item: "Malte (opcional)", percentage: 0.75, weightOriginal: "3.3g" }, { item: "Todo o Poolish", percentage: 100, weightOriginal: "440g", isPreFerment: true, preFermentFlourPercentage: 50 } ] }, instructions: [ "Preparo do Poolish: Misture, cubra, fermente (18-21°C) por 12-16h.", "Mistura (Massa Final): Ingredientes + poolish. Mistura aprimorada. Tdesejada 23-24°C.", "Primeira Fermentação: 1h, com 1 dobra aos 30 min.", "Divisão e Pré-Modelagem: Porções de 280-300g. Retângulos leves.", "Descanso Intermediário: Cubra, 20-30 min.", "Modelagem Final: Baguetes com tensão.", "Fermentação Final: Em couche. 1h-1h15min a 27°C (65% UR).", "Cortes: 5-6 diagonais.", "Cocção: 238°C+, com vapor. 20-25 min.", "Resfriamento: Em grades." ], tips: [ "Qualidade da farinha é crucial.", "Vapor no início é essencial.", "Para finger food, fatie fino e torre." ] },
+            { name: "Baguete Multigrãos", category: "buffet", description: "Variação nutritiva da baguete, com sementes e grãos.", ingredients: { soaker: [ { item: "Mix de Grãos e Sementes", percentage: null, weightOriginal: "80g" }, { item: "Água Morna", percentage: null, weightOriginal: "80g" } ], finalDough: [ { item: "Farinha de Trigo Branca", percentage: 70, weightOriginal: "350g", isBaseFlourPart: true }, { item: "Farinha de Trigo Integral Fina", percentage: 30, weightOriginal: "150g", isBaseFlourPart: true }, { item: "Água", percentage: 68, weightOriginal: "340g" }, { item: "Sal", percentage: 2, weightOriginal: "10g" }, { item: "Fermento Fresco OU", percentage: 1.5, weightOriginal: "7.5g" }, { item: "FSI", percentage: 0.5, weightOriginal: "2.5g" }, { item: "(Opcional) Poolish", percentage: 30, weightOriginal: "150g", isPreFerment: true, preFermentFlourPercentage: 100}, { item: "Todo o Soaker escorrido", percentage: null, weightOriginal: "" } ] }, instructions: [ "Preparo do Soaker: Hidrate grãos ≥2h. Escorra.", "Mistura: Adicione farinhas, água, poolish (se usar). Incorpore. Adicione fermento, sal. Soaker no final. Tdesejada: 23-24°C.", "Siga passos 3-10 da Baguete Tradicional." ], tips: [ "Soaker garante umidade.", "Ajuste proporção branca/integral." ] },
+            { name: "Ciabatta (com Poolish)", category: "buffet", description: "Pão italiano rústico, miolo aerado. (Baseado em Michel Suas)", ingredients: { poolish: [ { item: "Farinha de Trigo", percentage: 100, weightOriginal: "240g", isBaseFlourPart: true }, { item: "Água", percentage: 100, weightOriginal: "240g" }, { item: "Fermento Fresco OU", percentage: 0.12, weightOriginal: "0.3g" }, { item: "FSI", percentage: 0.04, weightOriginal: "0.1g" } ], finalDough: [ { item: "Farinha de Trigo", percentage: 100, weightOriginal: "390g", isBaseFlour: true }, { item: "Água", percentage: 61.29, weightOriginal: "239g" }, { item: "Sal", percentage: 3.23, weightOriginal: "12.6g" }, { item: "Fermento Fresco OU", percentage: 0.78, weightOriginal: "3g" }, { item: "FSI", percentage: 0.26, weightOriginal: "1g" }, { item: "Azeite EV", percentage: 4.84, weightOriginal: "19g" }, { item: "Todo o Poolish", percentage: null, weightOriginal: "480g", isPreFerment: true, preFermentFlourPercentage: (240/390)*100 } ] }, instructions: [ "Preparo do Poolish: Conforme Baguete.", "Mistura: Básica. Ingredientes (exceto azeite). Adicione azeite. Massa mole. Tdesejada: 23-24°C.", "1ª Fermentação: Recipiente untado. 3h, 2-3 dobras.", "Divisão: Bancada enfarinhada. Retângulos (250-300g). Sem pré-modelagem.", "Fermentação Final: Tecido enfarinhado/assadeiras. 30-45 min a 27°C.", "Cocção: 232°C+, pedra, vapor. 20-25 min.", "Resfriamento: Grades." ], tips: [ "Alta hidratação é chave.", "Use bastante farinha ao manipular." ] },
+            { name: "Focaccia Clássica", category: "buffet", description: "Pão italiano achatado e macio. (Baseado em Michel Suas)", ingredients: { pateFermentee: [ { item: "Farinha de Trigo", percentage: 100, weightOriginal: "165g", isBaseFlourPart: true }, { item: "Água", percentage: 65, weightOriginal: "107g" }, { item: "Fermento Fresco OU", percentage: 0.6, weightOriginal: "1g" }, {item:"FSI", percentage:0.2, weightOriginal:""}, { item: "Sal", percentage: 2, weightOriginal: "3.3g" } ], finalDough: [ { item: "Farinha de Trigo", percentage: 100, weightOriginal: "490g", isBaseFlour: true }, { item: "Água", percentage: 66.33, weightOriginal: "325g" }, { item: "Sal", percentage: 2.00, weightOriginal: "9.8g" }, { item: "Fermento Fresco OU", percentage: 1.8, weightOriginal: "8.8g" }, {item:"FSI", percentage:0.6, weightOriginal:""}, { item: "Azeite EV", percentage: 8.00, weightOriginal: "39g" }, { item: "Queijo Ralado (opc.)", percentage: 4.00, weightOriginal: "19.6g" }, { item: "Toda a Pâte Fermentée", percentage: null, weightOriginal: "276g", isPreFerment: true, preFermentFlourPercentage: (165/490)*100 } ], cobertura: [ { item: "Azeite EV", weightOriginal: "Generosamente" }, { item: "Alecrim Fresco", weightOriginal: "A gosto" }, { item: "Sal Grosso", weightOriginal: "A gosto" } ] }, instructions: [ "Pâte Fermentée: Misture, sove. Fermente 1h amb., refrigere 12-24h.", "Mistura: Ingredientes + pâte. Básica. Adicione azeite/queijo. Tdesejada: 23-26°C.", "1ª Fermentação: 2h, 1 dobra.", "Divisão e Modelagem: Abra em assadeiras untadas. Pressione dedos.", "Fermentação Final: 1h a 26°C.", "Cobertura e Cocção: Azeite, alecrim, sal. Forno 220-230°C, 20-25 min." ], tips: [ "Não economize no azeite.", "Variações: Tomate cereja, azeitonas, cebola." ] },
+            { name: "Minipão de Leite", category: "buffet", description: "Pãezinhos macios e adocicados. (Baseado em Michel Suas)", ingredients: { finalDough: [ { item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true }, { item: "Leite Integral", percentage: 45, weightOriginal: "225g" }, { item: "Ovos Inteiros", percentage: 22, weightOriginal: "110g" }, { item: "Açúcar", percentage: 11, weightOriginal: "55g" }, { item: "Sal", percentage: 2, weightOriginal: "10g" }, { item: "Fermento Fresco OU", percentage: 2.1, weightOriginal: "10.5g" }, { item: "FSI Osmotolerante", percentage: 0.7, weightOriginal: "3.5g" }, { item: "Manteiga (amolecida)", percentage: 45, weightOriginal: "225g" } ] }, instructions: [ "Mistura: Intensiva. Ingredientes (exceto manteiga). Desenvolva glúten. Adicione manteiga. Tdesejada: 22-25°C.", "1ª Fermentação: 45min-1h amb., refrigere.", "Divisão e Pré-Modelagem: 30-35g. Boleie.", "Descanso: Cubra, 20-30 min.", "Modelagem Final: Bolinhas, filões.", "Fermentação Final: Assadeiras. 1h-1h30min a 26°C. Pincele egg wash.", "Cocção: Forno 170-180°C, 12-15 min." ], tips: [ "Manteiga amolecida, não derretida.", "Monitore forno (massa rica)." ] },
+            { name: "Minipão Australiano", category: "buffet", description: "Pãezinhos escuros com mel e cacau.", ingredients: { finalDough: [ { item: "Farinha de Trigo", percentage: 70, weightOriginal: "350g", isBaseFlourPart: true }, { item: "Farinha Integral Fina", percentage: 30, weightOriginal: "150g", isBaseFlourPart: true }, { item: "Água Morna", percentage: 58, weightOriginal: "290ml" }, { item: "Mel", percentage: 8, weightOriginal: "40g" }, { item: "Cacau em Pó", percentage: 4, weightOriginal: "20g" }, { item: "Café Solúvel (opc.)", percentage: 1, weightOriginal: "5g" }, { item: "Sal", percentage: 1.8, weightOriginal: "9g" }, { item: "Fermento Fresco OU", percentage: 2.5, weightOriginal: "12.5g" }, {item:"FSI", percentage:0.8, weightOriginal:""}, { item: "Manteiga/Óleo", percentage: 5, weightOriginal: "25g" }, { item: "Fubá (opc. polvilhar)", weightOriginal: "" } ] }, instructions: [ "Mistura: Secos. Dissolva fermento, mel na água. Adicione. Incorpore sal, manteiga/óleo. Sove (aprimorada). Tdesejada: 24-26°C.", "1ª Fermentação: 1h-1h30.", "Divisão e Pré-Modelagem: 30-35g. Boleie.", "Descanso: Cubra, 15-20 min.", "Modelagem Final: Reboleie.", "Fermentação Final: Assadeiras. 45-60 min.", "Cocção: Forno 190-200°C, 12-15 min." ], tips: [ "Cacau/café para cor, não exagere.", "Ajuste hidratação." ] },
+            { name: "Minipão de Queijo", category: "buffet", description: "Pãezinhos macios com batata e queijo.", ingredients: { finalDough: [ { item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true }, { item: "Purê de Batata (frio)", percentage: 40, weightOriginal: "200g" }, { item: "Leite Integral (morno)", percentage: 25, weightOriginal: "125ml" }, { item: "Ovo", percentage: 10, weightOriginal: "50g" }, { item: "Açúcar", percentage: 5, weightOriginal: "25g" }, { item: "Sal", percentage: 1.8, weightOriginal: "9g" }, { item: "Fermento Fresco OU", percentage: 3, weightOriginal: "15g" }, {item:"FSI", percentage:1, weightOriginal:""}, { item: "Manteiga (amolecida)", percentage: 10, weightOriginal: "50g" }, { item: "Parmesão Ralado", percentage: 20, weightOriginal: "100g" }, { item: "Mussarela (opc. recheio)", weightOriginal: "a gosto" }, { item: "Gema p/ pincelar", weightOriginal: "" } ] }, instructions: [ "Mistura: Fermento, açúcar no leite. Farinha, sal, parmesão. Adicione purê, ovo, fermento. Manteiga. Sove (aprimorada). Tdesejada: 24-26°C.", "1ª Fermentação: 1h-1h30.", "Divisão e Pré-Modelagem: 35-40g. Recheie (opc.). Boleie.", "Descanso: Cubra, 15 min.", "Modelagem Final: Reboleie.", "Fermentação Final: Assadeiras. 45-60 min. Pincele gema.", "Cocção: Forno 180°C, 15-20 min." ], tips: [ "Purê de batata frio.", "Ajuste leite." ] },
+            { name: "Minipão Integral com Grãos", category: "buffet", description: "Versão saudável e rústica. (Adaptado de Michel Suas)", ingredients: { soaker: [ { item: "Mix de Grãos", percentage: null, weightOriginal: "50g" }, { item: "Água", percentage: null, weightOriginal: "50g" } ], finalDough: [ { item: "Farinha Integral Fina", percentage: 60, weightOriginal: "300g", isBaseFlourPart: true }, { item: "Farinha Branca", percentage: 40, weightOriginal: "200g", isBaseFlourPart: true }, { item: "Água (morna)", percentage: 65, weightOriginal: "325ml" }, { item: "Sal", percentage: 2, weightOriginal: "10g" }, { item: "Fermento Fresco OU", percentage: 2.5, weightOriginal: "12.5g" }, {item:"FSI", percentage:0.8, weightOriginal:""}, { item: "Mel/Melaço (opc.)", percentage: 3, weightOriginal: "15g" }, { item: "Todo o Soaker", weightOriginal: "" } ] }, instructions: [ "Soaker: Hidrate grãos ≥2h. Escorra.", "Mistura: Farinhas. Fermento, mel na água. Adicione. Sal. Sove (aprimorada). Soaker. Tdesejada: 23-27°C.", "1ª Fermentação: 1h-1h30, 1 dobra.", "Divisão e Pré-Modelagem: 35-40g. Boleie/filões.", "Descanso: Cubra, 20-25 min.", "Modelagem Final: Reafirme. Passe em grãos (opc.).", "Fermentação Final: Assadeiras. 45-60 min.", "Cocção: Forno 200-210°C, 12-18 min." ], tips: [ "Integral absorve mais água.", "Soaker para textura." ] },
+            { name: "Grissini Artesanal", category: "buffet", description: "Palitos finos e crocantes da Itália.", ingredients: { finalDough: [ { item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true }, { item: "Água", percentage: 58, weightOriginal: "290ml" }, { item: "Azeite EV", percentage: 9, weightOriginal: "45g" }, { item: "Sal", percentage: 2, weightOriginal: "10g" }, { item: "Fermento Fresco OU", percentage: 1.5, weightOriginal: "7.5g" }, {item:"FSI", percentage:0.5, weightOriginal:""}, { item: "Malte Diastático (opc.)", percentage: 1, weightOriginal: "5g" } ] }, instructions: [ "Mistura: Direta. Desenvolva glúten (sem excesso). Massa firme. Tdesejada: 23-25°C.", "1ª Fermentação: Curta, 30-45 min (relaxar).", "Divisão e Modelagem: Abra fino (3-5mm). Corte tiras. Torça (opc.).", "Fermentação Final: Mínima.", "Cocção: Assadeiras. Forno 180-190°C, 15-20 min, até secar." ], tips: [ "Pode usar vinho branco seco.", "Estique fino.", "Variações: Gergelim, parmesão, alecrim." ] },
+            { name: "Pão de Campanha (Sourdough)", category: "buffet", description: "Pão rústico francês com levain. (Baseado em Michel Suas)", ingredients: { levain: [ { item: "Farinha Branca", percentage: 50, weightOriginal: "50g", isBaseFlourPart: true }, { item: "Farinha Integral/Centeio", percentage: 50, weightOriginal: "50g", isBaseFlourPart: true }, { item: "Água", percentage: 100, weightOriginal: "100g" }, { item: "Starter Maduro", percentage: 20, weightOriginal: "20g" } ], finalDough: [ { item: "Farinha Branca", percentage: 80, weightOriginal: "400g", isBaseFlourPart: true }, { item: "Farinha Integral", percentage: 15, weightOriginal: "75g", isBaseFlourPart: true }, { item: "Farinha Centeio (opc.)", percentage: 5, weightOriginal: "25g", isBaseFlourPart: true }, { item: "Água", percentage: 70, weightOriginal: "350ml" }, { item: "Sal", percentage: 2, weightOriginal: "10g" }, { item: "Todo o Levain", percentage: null, weightOriginal: "220g", isPreFerment: true, preFermentFlourPercentage: (100 / (400+75+25)) * 100 } ] }, instructions: [ "Levain: Misture, fermente até dobrar/triplicar.", "Autólise (Opc.): Farinhas + água. 30-60 min.", "Mistura: Levain, sal (água restante) à autólise. Glúten moderado. Tdesejada: 24-26°C.", "1ª Fermentação: 3-4h, 3-4 dobras.", "Divisão e Pré-Modelagem: 2 porções. Boule/bâtard.", "Descanso: Cubra, 20-30 min.", "Modelagem Final: Firme. Bannetons.", "Fermentação Final: 1-3h amb. OU retarde geladeira 8-16h.", "Cortes e Cocção: Forno/panela 230-250°C. Vapor. Reduza temp. Total 40-55 min.", "Resfriamento: Essencial (≥2h)." ], tips: [ "Paciência com levain.", "Panela de ferro ajuda." ] },
+            { name: "Pão de Centeio Leve", category: "buffet", description: "Combinação de centeio e trigo. (Inspirado em Michel Suas)", ingredients: { pateFermentee: [ { item: "Farinha de Trigo", percentage: 100, weightOriginal: "130g", isBaseFlourPart: true }, { item: "Água", percentage: 65, weightOriginal: "85g" }, { item: "Fermento Fresco OU", percentage: 0.75, weightOriginal: "1g" }, {item:"FSI", percentage:0.25, weightOriginal:""}, { item: "Sal", percentage: 2, weightOriginal: "2.6g" } ], finalDough: [ { item: "Farinha Branca", percentage: 60, weightOriginal: "300g", isBaseFlourPart: true }, { item: "Farinha Centeio Média/Clara", percentage: 40, weightOriginal: "200g", isBaseFlourPart: true }, { item: "Água", percentage: 70, weightOriginal: "350ml" }, { item: "Sal", percentage: 2, weightOriginal: "10g" }, { item: "Fermento Fresco OU", percentage: 1.5, weightOriginal: "7.5g" }, {item:"FSI", percentage:0.5, weightOriginal:""}, { item: "Sementes (Cominho, opc.)", percentage: null, weightOriginal: "5-7.5g" }, { item: "Toda a Pâte Fermentée (se usar)", percentage: null, weightOriginal: "218g", isPreFerment: true, preFermentFlourPercentage: (130/500)*100 } ] }, instructions: [ "Pâte Fermentée (se usar): Misture. Fermente 1h amb., refrigere.", "Mistura: Farinhas (sementes). Água, fermento, pâte. Sal. Aprimorada (cuidado centeio). Tdesejada: 24-25°C.", "1ª Fermentação: 1h-1h30 (1 dobra se nec.).", "Divisão e Pré-Modelagem: Use farinha centeio. Redondo/oval.", "Descanso: Cubra, 20-30 min.", "Modelagem Final: Broa/filão.", "Fermentação Final: 45-60 min a 27°C.", "Cortes e Cocção: Corte. Forno 220-230°C, vapor. 30-40 min (TI 96-98°C).", "Resfriamento: Fundamental (12-24h)." ], tips: [ "Massa de centeio é pegajosa.", "Aumentar centeio integral intensifica sabor." ] }
+        ];
+        
+        const defaultFrenchRecipesData = [
+            { name: "Baguette (Francesa)", category: "franceses", description: "A icônica baguette francesa, conhecida por sua casca fina e crocante, miolo aerado e sabor característico de uma boa fermentação. Pode ser feita com método direto, poolish ou levain.", ingredients: { poolish: [ { item: "Farinha de Trigo T55 ou T65", percentage: 100, weightOriginal: "150g", isBaseFlourPart: true }, { item: "Água", percentage: 100, weightOriginal: "150g" }, { item: "FSI", percentage: 0.1, weightOriginal: "0.15g" } ], finalDough: [ { item: "Farinha de Trigo T55 ou T65", percentage: 100, weightOriginal: "350g", isBaseFlour: true }, { item: "Água", percentage: 62, weightOriginal: "217g" }, { item: "Sal", percentage: 2, weightOriginal: "7g" },  { item: "FSI", percentage: 0.3, weightOriginal: "1g" }, { item: "Todo o Poolish", percentage: null, weightOriginal: "300g", isPreFerment: true, preFermentFlourPercentage: (150/350)*100 }] }, instructions: ["Preparo do Poolish: 12-16h a 20°C.", "Mistura: Autólise (farinha da massa final + água) por 20-30 min. Adicionar poolish, sal, fermento. Mistura aprimorada.", "Primeira Fermentação: 1h30 com dobras a cada 30 min.", "Divisão e Pré-modelagem: Pesar (ex: 350g), pré-modelar em cilindros.", "Descanso: 20-30 min.", "Modelagem: Alongar para formato de baguette.", "Fermentação Final: Em couche, 1h-1h30min.", "Cortes: 5-7 cortes (lâmina a 45°).", "Cocção: Forno muito quente (240-250°C) com vapor abundante nos primeiros 10-12 min. Total 20-25 min."], tips: ["Use farinha francesa T55 ou T65 para autenticidade.", "O vapor é crucial para a casca.", "A modelagem correta garante a estrutura interna."] },
+            { name: "Baguette Épi", category: "franceses", description: "Baguette modelada e cortada para se assemelhar a um ramo de trigo (épi de blé). Visualmente impressionante e fácil de compartilhar.", ingredients: { finalDough: [{item:"Massa de Baguette (Francesa)", percentage: 100, weightOriginal: "350g", isBaseFlour: true, referencesRecipe: "Baguette (Francesa)"}] }, instructions: ["Prepare massa de baguette até a modelagem final.", "Modele a baguette um pouco mais fina e longa que o usual.", "Coloque sobre papel manteiga ou pá enfarinhada.", "Com uma tesoura bem afiada e ligeiramente inclinada (aprox. 45-60°), faça cortes profundos quase até a base, espaçados de 3-4 cm.", "Após cada corte, desloque a 'folha' de massa para um lado, alternando (esquerda, direita) para formar o padrão de espiga.", "Prossiga com a fermentação final e asse como uma baguette, com vapor."], tips: ["Use uma tesoura dedicada para alimentos.", "A prática leva à perfeição na técnica de corte e deslocamento das 'folhas'."]},
+            { name: "Baguette Fougasse", category: "franceses", description: "Uma variação da fougasse, feita com massa de baguette e caracterizada por seus cortes abertos, que maximizam a casca crocante.", ingredients: { finalDough: [{item:"Massa de Baguette (Francesa)", percentage: 100, weightOriginal: "350g", isBaseFlour: true, referencesRecipe: "Baguette (Francesa)"}, {item:"Azeite de Oliva Extra Virgem", percentage: null, weightOriginal:"para pincelar"}, {item:"Flor de Sal e/ou Ervas de Provence (opcional)", percentage: null, weightOriginal:"a gosto"}] }, instructions: ["Prepare a massa de baguette até o final da primeira fermentação.", "Divida e pré-modele em um oval achatado.", "Após o descanso, abra a massa em um formato de folha ou oval com cerca de 1-1.5cm de espessura.", "Transfira para papel manteiga.", "Com um cortador de massa ou faca afiada, faça um corte central longo e 2-3 pares de cortes laterais em ângulo, como os veios de uma folha. Não corte as bordas externas.", "Abra delicadamente os cortes com os dedos para que não se fechem.", "Pincele com azeite, polvilhe com flor de sal e/ou ervas.", "Fermentação final curta (20-30 min).", "Asse em forno bem quente (230-240°C) por 15-20 min, até dourar."], tips: ["Os cortes devem ser largos o suficiente para não fecharem completamente.", "Excelente para acompanhar queijos e antepastos."]},
+            { name: "Vivarais", category: "franceses", description: "Pão regional da região de Vivarais (Ardèche), geralmente um pão rústico, redondo ou ligeiramente alongado, com uma crosta bem desenvolvida.", ingredients: { finalDough: [{item:"Farinha de Trigo T65 ou T80 (semi-integral)", percentage:100, weightOriginal:"500g", isBaseFlour: true}, {item:"Água", percentage:70, weightOriginal:"350g"}, {item:"Levain líquido ou firme", percentage:25, weightOriginal:"125g", isPreFerment: true, preFermentFlourPercentage: 25}, {item:"Sal", percentage:2, weightOriginal:"10g"}] }, instructions: ["Mistura: Autólise recomendada. Incorporar levain e sal. Desenvolver glúten moderadamente.", "Primeira fermentação: 2-3 horas com dobras.", "Divisão e Pré-modelagem: Bolear levemente.", "Descanso: 20-30 min.", "Modelagem: Formato redondo (boule) ou ligeiramente oval.", "Fermentação Final: Em banneton, 1h30-2h ou retardo a frio.", "Cortes: Simples (cruz) ou múltiplos cortes.", "Cocção: Forno quente com vapor, similar a um pão de campanha."], tips: ["O uso de farinha semi-integral (T80) contribui para o caráter rústico.", "Longa fermentação é ideal para desenvolver sabor."]},
+            { name: "Auvergnat", category: "franceses", description: "Pão originário da região de Auvergne, caracterizado por ser um pão redondo (boule) com um pequeno pedaço de massa (o 'chapéu' ou 'bonnet') colocado no topo antes de assar.", ingredients: { finalDough: [{item:"Farinha de Trigo T65", percentage:80, weightOriginal:"400g", isBaseFlourPart: true}, {item:"Farinha de Centeio Clara (T70)", percentage:20, weightOriginal:"100g", isBaseFlourPart: true}, {item:"Água", percentage:66, weightOriginal:"330g"}, {item:"Levain ou Fermento Fresco", percentage:20, weightOriginal:"100g"}, {item:"Sal", percentage:2, weightOriginal:"10g"}] }, instructions: ["Preparo da massa: Método direto ou com levain.", "Primeira Fermentação: 1h30-2h com dobras.", "Divisão: Divida a massa principal. Separe uma pequena porção (cerca de 1/8 a 1/10 do peso total) para o 'chapéu'.", "Pré-modelagem: Boleie a porção maior e a menor.", "Descanso: 15-20 min.", "Modelagem: Modele a porção maior em uma boule firme. Achate levemente a porção menor para formar um disco.", "Montagem: Umedeça levemente o centro da boule maior e coloque o disco de massa (chapéu) por cima, pressionando levemente para aderir.", "Fermentação Final: Em banneton ou sobre tecido enfarinhado.", "Cocção: Forno quente com vapor. O chapéu pode ser polvilhado com farinha antes de assar."], tips: ["O 'chapéu' é a característica distintiva.", "Uma mistura de farinha de trigo e um pouco de centeio é comum."]},
+            { name: "Couronne Bordelaise", category: "franceses", description: "Originária de Bordeaux, esta 'coroa' é um pão decorativo e saboroso, formado por várias bolas de massa dispostas em círculo.", ingredients: { finalDough: [{item:"Massa de Pão de Campanha ou Baguette", percentage: 100, weightOriginal: "700g", isBaseFlour: true, referencesRecipe: "Pão de Campanha (Sourdough)"}] }, instructions: ["Prepare uma massa de pão rústico (campanha ou baguette).", "Após a primeira fermentação, divida a massa em 6 a 8 porções iguais (ex: 75-100g cada).", "Boleie cada porção firmemente.", "Disponha as bolas em círculo sobre papel manteiga ou assadeira enfarinhada, deixando um pequeno espaço entre elas para que se unam ao crescer, mas não se fundam completamente. Pode-se usar um anel ou forma redonda no centro para ajudar a manter o formato.", "Fermentação Final: Cubra e deixe fermentar até que as bolas se toquem e o conjunto esteja bem aerado.", "Cortes: Faça um pequeno corte em cada bola (opcional).", "Cocção: Forno quente com vapor. O tempo de cozimento será similar ao de pães individuais do mesmo tamanho."], tips: ["Certifique-se de que as bolas de massa estejam bem próximas para formar a coroa, mas não tão apertadas que não possam expandir.", "Polvilhar com farinha antes de assar realça o visual rústico."]},
+            { name: "Tordu", category: "franceses", description: "'Pão torcido', um pão rústico alongado que recebe uma torção antes da fermentação final, criando uma casca interessante e um miolo irregular.", ingredients: { finalDough: [{item:"Farinha de Trigo T65 ou T80", percentage:100, weightOriginal:"500g", isBaseFlour: true}, {item:"Água", percentage:70, weightOriginal:"350g"}, {item:"Levain ou Poolish", percentage:25, weightOriginal:"125g", isPreFerment: true, preFermentFlourPercentage:25}, {item:"Sal", percentage:2, weightOriginal:"10g"}] }, instructions: ["Prepare uma massa de pão rústico (pode ser similar à de campanha ou baguette com maior hidratação).", "Após a primeira fermentação e divisão, pré-modele em um retângulo.", "Descanso: 20-30 min.", "Modelagem: Abra o retângulo levemente. Dobre uma das pontas mais longas até um pouco além do centro. Dobre a outra ponta por cima, como uma carta. Achate levemente para formar um bâtard grosso.", "Torção: Segure as duas extremidades do bâtard e torça-o 2-3 vezes sobre si mesmo.", "Fermentação Final: Em tecido enfarinhado ou diretamente na pá, mantendo a forma torcida.", "Cocção: Forno quente com vapor."], tips: ["A torção deve ser firme o suficiente para manter a forma, mas não tão apertada a ponto de rasgar a massa.", "A casca irregular e crocante é um dos atrativos deste pão."]},
+            { name: "Tricorne", category: "franceses", description: "Pão com formato de 'três chifres' ou triangular, uma forma regional e tradicional.", ingredients: { finalDough: [{item:"Farinha de Trigo T65", percentage:100, weightOriginal:"500g", isBaseFlour: true}, {item:"Água", percentage:65, weightOriginal:"325g"}, {item:"Fermento Fresco ou Levain", percentage:1.5, weightOriginal:"7.5g"}, {item:"Sal", percentage:2, weightOriginal:"10g"}] }, instructions: ["Prepare uma massa de pão branco básica.", "Após a primeira fermentação, divida e pré-modele em bolas.", "Descanso: 15-20 min.", "Modelagem: Abra a bola em um disco. Com um cortador ou faca, faça três cortes radiais do centro para fora, sem atingir a borda, dividindo o disco em três 'pétalas' largas unidas no centro. Dobre cada 'pétala' sobre si mesma ou em direção ao centro de forma decorativa para criar as três pontas. Outra técnica é modelar um triângulo e acentuar as pontas.", "Fermentação Final: Em assadeira enfarinhada.", "Cocção: Forno quente com vapor."], tips: ["Existem variações na modelagem do Tricorne; pesquise imagens para inspiração.", "O importante é obter as três pontas características."] },
+            { name: "Fendu", category: "franceses", description: "'Pão dividido' ou 'rachado', um pão oval ou redondo com um corte central profundo feito antes da fermentação final, que se abre dramaticamente durante o cozimento.", ingredients: { finalDough: [{item:"Farinha de Trigo T65", percentage:100, weightOriginal:"500g", isBaseFlour: true}, {item:"Água", percentage:66, weightOriginal:"330g"}, {item:"Levain ou Poolish", percentage:25, weightOriginal:"125g", isPreFerment: true, preFermentFlourPercentage:25}, {item:"Sal", percentage:2, weightOriginal:"10g"}] }, instructions: ["Prepare uma massa de pão rústico.", "Após a primeira fermentação, divida e pré-modele em formato oval (bâtard) ou redondo (boule).", "Descanso: 20 min.", "Modelagem Final: Reforce o formato desejado.", "Preparação para o corte: Polvilhe a superfície da massa generosamente com farinha. Com a lateral da mão ou um rolo fino (como um cabo de colher de pau enfarinhado), pressione firmemente no centro da massa, ao longo do comprimento (para bâtard) ou diâmetro (para boule), quase dividindo a massa em duas metades, mas sem cortar completamente a base. A ideia é criar um vinco profundo.", "Fermentação Final: Coloque a massa com o vinco para baixo em um banneton ou tecido bem enfarinhado. Ou, com o vinco para cima, e ele se abrirá naturalmente. A técnica tradicional é com o vinco para baixo, e a 'explosão' ocorre ao virar para assar.", "Cocção: Vire a massa sobre a pá (se o vinco estava para baixo). O vinco se abrirá. Asse em forno quente com vapor."], tips: ["A profundidade do vinco é crucial para o efeito 'fendu'.", "Polvilhar bem com farinha antes de fazer o vinco ajuda a evitar que grude e realça a abertura."] },
+            { name: "Tabatière", category: "franceses", description: "Significa 'caixa de rapé'. É um pão redondo com uma aba de massa dobrada sobre uma parte, lembrando uma antiga caixa de rapé.", ingredients: { finalDough: [{item:"Farinha de Trigo T65", percentage:100, weightOriginal:"500g", isBaseFlour: true}, {item:"Água", percentage:65, weightOriginal:"325g"}, {item:"Fermento Fresco ou Levain", percentage:1.5, weightOriginal:"7.5g"}, {item:"Sal", percentage:2, weightOriginal:"10g"}] }, instructions: ["Prepare uma massa de pão branco básica.", "Após a primeira fermentação, divida e pré-modele em bolas.", "Descanso: 20 min.", "Modelagem: Abra a bola em um disco não muito fino. Dobre cerca de 2/3 do disco sobre o 1/3 restante, como se estivesse fechando uma carteira ou uma caixa de rapé. A borda da parte dobrada não deve encontrar a borda oposta, deixando uma parte da base descoberta.", "Pressione levemente a 'costura' para selar.", "Fermentação Final: Com a 'aba' para cima, em tecido enfarinhado ou assadeira.", "Cocção: Forno quente com vapor."], tips: ["A 'aba' deve ser grande o suficiente para ser característica.", "Polvilhar com farinha antes de assar pode realçar o formato."] },
+            { name: "Bâtard Auvergnat", category: "franceses", description: "Combina o formato oval do Bâtard com a tradição do 'chapéu' do pão Auvergnat.", ingredients: { finalDough: [{item:"Farinha de Trigo T65", percentage:80, weightOriginal:"400g", isBaseFlourPart: true}, {item:"Farinha de Centeio Clara", percentage:20, weightOriginal:"100g", isBaseFlourPart: true}, {item:"Água", percentage:66, weightOriginal:"330g"}, {item:"Levain ou Fermento Fresco", percentage:20, weightOriginal:"100g"}, {item:"Sal", percentage:2, weightOriginal:"10g"}] }, instructions: ["Siga o processo do Pão Auvergnat para a massa.", "Na divisão, separe uma porção para o 'chapéu' (proporcional ao tamanho do bâtard).", "Pré-modele a porção maior em um oval curto e a menor em uma bolinha.", "Descanso: 15-20 min.", "Modelagem: Modele a porção maior em um bâtard. Achate a bolinha do chapéu em um disco ovalado.", "Montagem: Umedeça o centro do bâtard e aplique o 'chapéu' ovalado por cima.", "Fermentação Final e Cocção: Similar ao Auvergnat ou bâtard padrão."], tips: ["O 'chapéu' no bâtard é menos comum que na boule, mas cria um pão distinto.", "Garanta boa aderência do chapéu."] },
+            { name: "Pain Tourte de Seigle", category: "franceses", description: "Um pão de centeio rústico e denso, tradicionalmente uma grande 'torta' redonda, com alto teor de farinha de centeio e geralmente fermentado com levain de centeio.", ingredients: { levainCenteio: [ {item: "Farinha de Centeio Integral", weightOriginal:"100g"}, {item: "Água Morna", weightOriginal:"100-120g"}, {item: "Starter de Levain (preferencialmente de centeio)", weightOriginal:"20g"} ], finalDough: [ {item: "Farinha de Centeio Integral", percentage:85, weightOriginal:"425g", isBaseFlourPart: true}, {item: "Farinha de Trigo Forte (opcional, para estrutura se menos de 90% centeio)", percentage:15, weightOriginal:"75g", isBaseFlourPart: true}, {item: "Água", percentage:80, weightOriginal:"400g"}, {item: "Sal", percentage:2.1, weightOriginal:"10.5g"}, {item: "Todo o Levain de Centeio", weightOriginal:"~220g", isPreFerment: true, preFermentFlourPercentage: (100/500)*100 } ] }, instructions: [ "Preparo do Levain de Centeio: 8-12h.", "Mistura: Incorporar ingredientes. Não sovar demais.", "1ª Fermentação: Curta, 1-2h.", "Modelagem: Boule. Usar farinha de centeio.", "Fermentação Final: 1-2h. Não dobra de volume.", "Cocção: Forno quente com vapor, depois reduzir. Cozimento longo.", "Resfriamento: Crucial (12-24h)." ], tips: [ "Estrutura vem do amido do centeio.", "Acidez do levain é importante.", "Denso, úmido, sabor pronunciado." ] }
+        ];
+        
+        const defaultAllAdvancedRecipeData = [
+            { name: "Pão Italiano", category: "avancados", description: "Pão rústico de casca crocante e miolo macio.", ingredients: { finalDough: [{item: "Farinha de Trigo (tipo 00 ou forte)", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Água", percentage: 68, weightOriginal: "340g"}, {item: "Fermento Biológico Seco", percentage: 0.6, weightOriginal: "3g"}, {item: "Sal", percentage: 2, weightOriginal: "10g"}, {item: "Azeite de Oliva (opcional)", percentage: 2, weightOriginal: "10g"}] }, instructions: ["Mistura: Direta ou com biga/poolish.", "Primeira Fermentação: 1-2 horas com dobras.", "Modelagem: Filone ou Pagnotta.", "Fermentação Final: 1-1.5 horas.", "Cocção: Forno alto com vapor."], tips: ["Usar farinha forte.", "Longa fermentação a frio melhora sabor."] },
+            { name: "Pão Italiano ao Levain", category: "avancados", description: "Versão do pão italiano utilizando fermento natural (levain).", ingredients: { levain: [{item: "Farinha de Trigo Forte", percentage:100, weightOriginal:"50g", isBaseFlourPart: true}, {item:"Água", percentage:100, weightOriginal:"50g"}, {item:"Starter Maduro", percentage:20, weightOriginal:"10g"}], finalDough: [{item: "Farinha de Trigo (tipo 00 ou forte)", percentage: 100, weightOriginal: "450g", isBaseFlour: true}, {item: "Água", percentage: 71, weightOriginal: "320g"}, {item: "Sal", percentage: 2, weightOriginal: "9g"}, {item: "Todo o Levain", percentage: null, weightOriginal: "110g", isPreFerment: true, preFermentFlourPercentage: (50/450)*100}] }, instructions: ["Preparo do Levain.", "Autólise.", "Mistura.", "Primeira Fermentação com dobras.", "Modelagem e Fermentação Final.", "Cocção."], tips: ["Ajuste hidratação.", "Paciência."] },
+            { name: "Pão Italiano com Centeio", category: "avancados", description: "Adiciona farinha de centeio à receita tradicional.", ingredients: { finalDough: [{item: "Farinha de Trigo Forte", percentage: 75, weightOriginal: "375g", isBaseFlourPart: true}, {item: "Farinha de Centeio (clara ou média)", percentage: 25, weightOriginal: "125g", isBaseFlourPart: true}, {item: "Água", percentage: 72, weightOriginal: "360g"}, {item: "Fermento Biológico Seco", percentage: 0.6, weightOriginal: "3g"}, {item: "Sal", percentage: 2, weightOriginal: "10g"}] }, instructions: ["Similar ao Pão Italiano, mas centeio torna massa pegajosa.", "Ajustar sova.", "Fermentação pode ser mais rápida."], tips: ["Não exagere no centeio.", "Centeio absorve mais água."] },
+            { name: "Pão de Cerveja Preta com Provolone", category: "avancados", description: "Pão com cerveja preta e provolone.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Cerveja Preta", percentage: 62, weightOriginal: "310ml"}, {item: "Queijo Provolone em cubos", percentage: 25, weightOriginal: "125g"}, {item: "Fermento Biológico Seco", percentage: 1.4, weightOriginal: "7g"}, {item: "Sal", percentage: 1.8, weightOriginal: "9g"}, {item: "Açúcar Mascavo (opc.)", percentage: 2.5, weightOriginal: "12.5g"}] }, instructions: ["Mistura: Incorporar tudo, exceto queijo.", "Adicionar queijo no final.", "Fermentações e modelagem rústica.", "Cocção: Cuidado com queijo."], tips: ["Cerveja substitui água.", "Provolone defumado é ótimo."] },
+            { name: "Kaiser Roll", category: "avancados", description: "Pãozinho austríaco com coroa de 5 pontas.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Água", percentage: 58, weightOriginal: "290ml"}, {item: "Fermento Biológico Seco", percentage: 2.5, weightOriginal: "12.5g"}, {item: "Sal", percentage: 2, weightOriginal: "10g"}, {item: "Açúcar", percentage: 2, weightOriginal: "10g"}, {item: "Manteiga ou Óleo", percentage: 3.5, weightOriginal: "17.5g"}, {item: "Malte (opc.)", percentage: 1, weightOriginal: "5g"}], cobertura: [{item:"Sementes de Papoula ou Gergelim"}] }, instructions: ["Mistura: Desenvolver bem.", "Divisão: 60-80g.", "Modelagem: Bolear, usar carimbo Kaiser ou técnica manual.", "Fermentação Final: Quase dobrar.", "Cocção: Forno médio-alto, vapor, pincelar água, polvilhar sementes."], tips: ["Modelagem da coroa é chave.", "Escaldar para casca brilhante."] },
+            { name: "Pão de Abóbora", category: "avancados", description: "Pão macio com abóbora e especiarias.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Purê de Abóbora", percentage: 35, weightOriginal: "175g"}, {item: "Água ou Leite", percentage: 25, weightOriginal: "125ml"}, {item: "Ovo", percentage: 10, weightOriginal: "50g"}, {item: "Açúcar Mascavo", percentage: 9, weightOriginal: "45g"}, {item: "Manteiga", percentage: 9, weightOriginal: "45g"}, {item: "Fermento Biológico Seco", percentage: 1.4, weightOriginal: "7g"}, {item: "Sal", percentage: 1.5, weightOriginal: "7.5g"}, {item: "Especiarias", percentage: 0.8, weightOriginal: "4g"}] }, instructions: ["Mistura: Purê com líquidos. Adicionar demais. Sovar.", "Fermentações: Padrão pães enriquecidos.", "Modelagem: Forma, broas, pãezinhos.", "Cocção: Forno médio."], tips: ["Purê adiciona umidade, ajuste líquidos.", "Ajuste especiarias."] },
+            { name: "Pão de Batata Roxa", category: "avancados", description: "Pão com cor roxa natural e macio.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Purê de Batata Roxa (fria)", percentage: 35, weightOriginal: "175g"}, {item: "Água ou Leite", percentage: 30, weightOriginal: "150ml"}, {item: "Açúcar", percentage: 6, weightOriginal: "30g"}, {item: "Manteiga", percentage: 6, weightOriginal: "30g"}, {item: "Fermento Biológico Seco", percentage: 2, weightOriginal: "10g"}, {item: "Sal", percentage: 1.8, weightOriginal: "9g"}] }, instructions: ["Similar ao pão de abóbora.", "Cor varia com batata."], tips: ["Cozinhe batata com casca.", "Massa pode ser mais densa."] },
+            { name: "Pão de Farinha de Uva", category: "avancados", description: "Pão com sabor e cor da farinha de uva.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 85, weightOriginal: "425g", isBaseFlourPart: true}, {item: "Farinha de Bagaço de Uva", percentage: 15, weightOriginal: "75g", isBaseFlourPart: true}, {item: "Água", percentage: 68, weightOriginal: "340g"}, {item: "Fermento Biológico Seco", percentage: 1.4, weightOriginal: "7g"}, {item: "Sal", percentage: 2, weightOriginal: "10g"}, {item: "Mel/Açúcar Mascavo (opc.)", percentage: 4, weightOriginal: "20g"}] }, instructions: ["Mistura: Ajuste hidratação (farinha de uva absorve).", "Fermentações: Padrão. Cor intensa.", "Pode usar levain."], tips: ["Farinha de uva tem sabor forte, comece com menos.", "Pão rústico e denso."] },
+            { name: "Pão de Figo", category: "avancados", description: "Pão rústico com figos secos e nozes.", ingredients: { finalDough: [ {item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Água", percentage: 68, weightOriginal: "340g"}, {item: "Figos Secos Picados", percentage: 30, weightOriginal: "150g"}, {item: "Nozes Picadas (opc.)", percentage: 12, weightOriginal: "60g"}, {item: "Levain (100% hidr.)", percentage: 20, weightOriginal: "100g", isPreFerment: true, preFermentFlourPercentage: 10}, {item: "Sal", percentage: 2, weightOriginal: "10g"} ] }, instructions: ["Hidrate figos. Adicione figos/nozes no final da mistura.", "Fermentações e modelagem rústica."], tips: ["Figos podem 'roubar' água.", "Combina com queijos azuis."] },
+            { name: "Pão de Ameixa com Chocolate Branco", category: "avancados", description: "Pão com ameixas e chocolate branco.", ingredients: { finalDough: [{item: "Farinha de Trigo", percentage: 100, weightOriginal: "500g", isBaseFlour: true}, {item: "Leite ou Água", percentage: 62, weightOriginal: "310ml"}, {item: "Ameixas Secas Picadas", percentage: 22, weightOriginal: "110g"}, {item: "Chocolate Branco Pedaços", percentage: 18, weightOriginal: "90g"}, {item: "Manteiga", percentage: 6, weightOriginal: "30g"}, {item: "Açúcar", percentage: 9, weightOriginal: "45g"}, {item: "Ovo", percentage: 10, weightOriginal: "50g"}, {item: "Fermento Biológico Seco", percentage: 1.8, weightOriginal: "9g"}, {item: "Sal", percentage: 1.5, weightOriginal: "7.5g"}] }, instructions: ["Mistura: Massa enriquecida. Ameixas/chocolate no final.", "Fermentações: Padrão pães doces.", "Modelagem: Forma, tranças, pãezinhos.", "Cocção: Cuidado com chocolate."], tips: ["Use chocolate de boa qualidade.", "Ameixas podem ser hidratadas."] },
+            { name: "Panetone com Frutas Cristalizadas", category: "avancados", description: "Pão doce italiano natalino com fermentação natural.", ingredients: { lievitoMadre: [{item:"Detalhes do refresco do levain mãe a definir"}], primoImpasto: [{item:"Farinha Forte", weightOriginal:"100g"}, {item:"Açúcar", weightOriginal:"30g"}, {item:"Água", weightOriginal:"50g"}, {item:"Gemas", weightOriginal:"30g"}, {item:"Lievito Madre", weightOriginal:"30g"}], secondoImpasto: [{item:"Farinha Forte", weightOriginal:"50g"}, {item:"Açúcar", weightOriginal:"30g"}, {item:"Mel", weightOriginal:"5g"}, {item:"Gemas", weightOriginal:"30g"}, {item:"Manteiga", weightOriginal:"60g"}, {item:"Sal", weightOriginal:"2g"}, {item:"Frutas Cristalizadas", weightOriginal:"100g"}, {item:"Uvas Passas", weightOriginal:"50g"}, {item:"Aromas", weightOriginal:"a gosto"}, {item:"Todo o Primeiro Impasto"}] }, instructions: ["Processo longo: refrescos lievito, 2 impastos.", "1º Impasto: Fermenta 10-14h.", "2º Impasto: Mais ingredientes, frutas. Fermenta em formas.", "Cocção lenta. Resfriamento de cabeça para baixo."], tips: ["Requer lievito madre forte.", "Controle de temperatura crucial."] },
+            { name: "Panetone com Gotas de Chocolate", category: "avancados", description: "Variação do panetone com gotas de chocolate.", ingredients: { lievitoMadre: [{item:"Como acima"}], primoImpasto: [{item:"Como acima"}], secondoImpasto: [{item:"Ingredientes como acima, mas substitua Frutas e Passas por", weightOriginal:""},{item:"Gotas de Chocolate Amargo", weightOriginal:"150g"}] }, instructions: ["Processo idêntico, chocolate no final da 2ª mistura."], tips: ["Use chocolate resistente ao calor.", "Ajuste hidratação se necessário."] },
+            { name: "Ciabatta de Nozes", category: "avancados", description: "Ciabatta rústica com nozes.", ingredients: { poolish: [{item:"Farinha de Trigo", percentage:100, weightOriginal:"240g", isBaseFlourPart: true}, {item:"Água", percentage:100, weightOriginal:"240g"}, {item:"FSI", percentage:0.04, weightOriginal:"0.1g"}], finalDough: [{item:"Farinha de Trigo", percentage:100, weightOriginal:"390g", isBaseFlour: true}, {item:"Água", percentage:61.29, weightOriginal:"239g"}, {item:"Sal", percentage:3.23, weightOriginal:"12.6g"}, {item:"FSI", percentage:0.26, weightOriginal:"1g"}, {item:"Azeite EV", percentage:4.84, weightOriginal:"19g"}, {item:"Nozes Picadas", percentage:25, weightOriginal:"97.5g"}, {item:"Todo o Poolish", percentage:null, weightOriginal:"480g", isPreFerment:true, preFermentFlourPercentage:(240/390)*100}] }, instructions: ["Siga receita Ciabatta. Adicione nozes no final."], tips: ["Tostar nozes realça sabor.", "Combine com queijos."] },
+            { name: "Ciabatta de Azeitonas", category: "avancados", description: "Ciabatta com azeitonas e sabor mediterrâneo.", ingredients: { poolish: [{item:"Farinha de Trigo", percentage:100, weightOriginal:"240g", isBaseFlourPart:true}, {item:"Água", percentage:100, weightOriginal:"240g"}, {item:"FSI", percentage:0.04, weightOriginal:"0.1g"}], finalDough: [{item:"Farinha de Trigo", percentage:100, weightOriginal:"390g", isBaseFlour:true}, {item:"Água", percentage:61.29, weightOriginal:"239g"}, {item:"Sal", percentage:3.23, weightOriginal:"12.6g"}, {item:"FSI", percentage:0.26, weightOriginal:"1g"}, {item:"Azeite EV", percentage:4.84, weightOriginal:"19g"}, {item:"Azeitonas Picadas", percentage:25, weightOriginal:"97.5g"}, {item:"(Opcional) Ervas frescas", percentage:0.5, weightOriginal:"~2g"}, {item:"Todo o Poolish", percentage:null, weightOriginal:"480g", isPreFerment:true, preFermentFlourPercentage:(240/390)*100}] }, instructions: ["Siga receita Ciabatta. Adicione azeitonas/ervas no final."], tips: ["Seque azeitonas em conserva.", "Azeitonas Kalamata são ótimas."] },
+            { name: "Pão de Açaí com Castanhas", category: "avancados", description: "Pão exótico com açaí e castanhas.", ingredients: { finalDough: [{item:"Farinha de Trigo", percentage:100, weightOriginal:"500g", isBaseFlour:true}, {item:"Polpa de Açaí Congelada", percentage:35, weightOriginal:"175g"}, {item:"Água (ajustar)", percentage:35, weightOriginal:"175ml"}, {item:"Castanhas Picadas", percentage:18, weightOriginal:"90g"}, {item:"Mel/Açúcar Mascavo", percentage:6, weightOriginal:"30g"}, {item:"Fermento Biológico Seco", percentage:1.4, weightOriginal:"7g"}, {item:"Sal", percentage:1.8, weightOriginal:"9g"}] }, instructions: ["Descongele açaí. Use como líquido. Misture, adicione castanhas no final.", "Fermentações e modelagem rústica."], tips: ["Ajuste água conforme polpa.", "Cor roxa intensa."] },
+            { name: "Pain Beaujolais com Gorgonzola", category: "avancados", description: "Pão francês com vinho e gorgonzola.", ingredients: { finalDough: [{item:"Farinha de Trigo", percentage:100, weightOriginal:"500g", isBaseFlour:true}, {item:"Vinho Tinto Beaujolais", percentage:62, weightOriginal:"310ml"}, {item:"Queijo Gorgonzola", percentage:18, weightOriginal:"90g"}, {item:"Levain (100% hidr.)", percentage:20, weightOriginal:"100g", isPreFerment:true, preFermentFlourPercentage:10}, {item:"Sal", percentage:1.8, weightOriginal:"9g"}, {item:"(Opcional) Nozes", percentage:10, weightOriginal:"50g"}] }, instructions: ["Mistura: Vinho como líquido. Gorgonzola/nozes no final.", "Fermentações: Álcool pode retardar.", "Modelagem: Rústica."], tips: ["Cor levemente arroxeada.", "Ideal para tábuas de queijos."] },
+            { name: "Pão de Tomate", category: "avancados", description: "Pão com tomate seco ou extrato.", ingredients: { finalDough: [{item:"Farinha de Trigo", percentage:100, weightOriginal:"500g", isBaseFlour:true}, {item:"Água", percentage:62, weightOriginal:"310ml"}, {item:"Tomate Seco OU", percentage:18, weightOriginal:"90g"}, {item:"Extrato de Tomate", percentage:6, weightOriginal:"30g"}, {item:"Azeite de Oliva", percentage:4, weightOriginal:"20g"}, {item:"Fermento Biológico Seco", percentage:1.4, weightOriginal:"7g"}, {item: "Sal", percentage:1.8, weightOriginal:"9g"}, {item:"(Opcional) Orégano/Manjericão", percentage:0.5, weightOriginal:"~2.5g"}] }, instructions: ["Hidrate tomate seco. Adicione tomate/ervas na mistura.", "Fermentações e modelagem padrão."], tips: ["Extrato dá cor uniforme.", "Tomate seco adiciona textura."] },
+            { name: "Pão de Centeio (Avançado)", category: "avancados", description: "Pão com alta porcentagem de centeio e sourdough.", ingredients: { sourdoughCenteio: [{item:"Farinha de Centeio Integral", weightOriginal:"100g"}, {item:"Água", weightOriginal:"100-120g"}, {item:"Starter de Centeio", weightOriginal:"20g"}], finalDough: [{item:"Farinha de Centeio Integral", percentage:70, weightOriginal:"350g", isBaseFlourPart:true}, {item:"Farinha de Trigo Forte", percentage:30, weightOriginal:"150g", isBaseFlourPart:true}, {item:"Água", percentage:80, weightOriginal:"400g"}, {item:"Sal", percentage:2.1, weightOriginal:"10.5g"}, {item:"Todo o Sourdough", percentage:null, weightOriginal:"~220g", isPreFerment:true, preFermentFlourPercentage:(100/500)*100 }, {item:"(Opcional) Sementes", percentage:12, weightOriginal:"60g"}] }, instructions: ["Sourdough de Centeio: Fermentar 12-16h.", "Mistura: Massas pegajosas, misturar para incorporar.", "1ª Fermentação: Curta, 1-1.5h.", "Modelagem: Bancada enfarinhada. Formas.", "Fermentação Final: Curta, 45-75 min.", "Cocção: Forno quente, depois reduzir. Longo cozimento."], tips: ["Acidez do sourdough é crucial.", "Resfriamento 24-48h essencial."] },
+            { name: "Pão de Trigo Sarraceno", category: "avancados", description: "Pão com sabor terroso do sarraceno.", ingredients: { finalDough: [{item:"Farinha de Trigo Sarraceno", percentage:40, weightOriginal:"200g", isBaseFlourPart:true}, {item:"Farinha de Trigo", percentage:60, weightOriginal:"300g", isBaseFlourPart:true}, {item:"Água", percentage:75, weightOriginal:"375g"}, {item:"Levain (100% hidr.)", percentage:20, weightOriginal:"100g", isPreFerment:true, preFermentFlourPercentage:10}, {item:"Sal", percentage:2, weightOriginal:"10g"}, {item:"(Opcional) Mel, sementes", weightOriginal:""}] }, instructions: ["Se 100% sarraceno, massa tipo bolo. Usar forma.", "Se misturado, glúten do trigo ajuda.", "Fermentação/cocção adaptadas."], tips: ["Sabor forte, combine ingredientes.", "Sem glúten exige técnicas específicas."] },
+            { name: "Pão de Cacau com Mix de Frutas Vermelhas", category: "avancados", description: "Pão adocicado com cacau e frutas vermelhas.", ingredients: { finalDough: [{item:"Farinha de Trigo", percentage:100, weightOriginal:"500g", isBaseFlour:true}, {item:"Cacau em Pó", percentage:6, weightOriginal:"30g"}, {item:"Água ou Leite", percentage:62, weightOriginal:"310ml"}, {item:"Mix Frutas Vermelhas Secas", percentage:25, weightOriginal:"125g"}, {item:"Açúcar", percentage:10, weightOriginal:"50g"}, {item:"Manteiga", percentage:8, weightOriginal:"40g"}, {item:"Ovo", percentage:10, weightOriginal:"50g"}, {item:"Fermento Biológico Seco", percentage:1.8, weightOriginal:"9g"}, {item:"Sal", percentage:1.5, weightOriginal:"7.5g"}] }, instructions: ["Hidrate frutas. Mistura: Massa enriquecida. Cacau com secos. Frutas no final.", "Fermentações e modelagem: Pão doce.", "Cocção: Forno médio. Cuidado com cacau."], tips: ["Use cacau de boa qualidade.", "Pode adicionar gotas de chocolate."] },
+            { name: "Pão de Campanha (Avançado)", category: "avancados", description: "Versão elaborada do Pão de Campanha.", ingredients: { levain: [{item:"Farinha Integral", weightOriginal:"75g"},{item:"Farinha de Centeio", weightOriginal:"25g"},{item:"Água", weightOriginal:"100g"},{item:"Starter", weightOriginal:"20g"}], finalDough: [{item:"Farinha de Trigo Forte", percentage:70, weightOriginal:"350g", isBaseFlourPart:true}, {item:"Farinha Integral (grossa)", percentage:20, weightOriginal:"100g", isBaseFlourPart:true}, {item:"Farinha Espelta/Centeio Claro", percentage:10, weightOriginal:"50g", isBaseFlourPart:true}, {item:"Água", percentage:78, weightOriginal:"390g"}, {item:"Sal", percentage:2.2, weightOriginal:"11g"}, {item:"Todo o Levain", percentage:null, weightOriginal:"~220g", isPreFerment:true, preFermentFlourPercentage:(100/500)*100}] }, instructions: ["Autólise longa. Dobras (lamination, coil).", "Fermentação em bloco longa. Retardo a frio.", "Cocção em panela/pedra com vapor."], tips: ["Dominar alta hidratação.", "Experimente grãos ancestrais."] },
+            { name: "Pão Português", category: "avancados", description: "Pão rústico português, casca estaladiça.", ingredients: { finalDough: [{item:"Farinha de Trigo (T65 ou similar)", percentage:100, weightOriginal:"500g", isBaseFlour:true}, {item:"Água", percentage:72, weightOriginal:"360g"}, {item:"Massa Mãe ou Levain", percentage:25, weightOriginal:"125g", isPreFerment:true, preFermentFlourPercentage:25}, {item:"Sal Marinho", percentage:2, weightOriginal:"10g"}] }, instructions: ["Tradicionalmente usa 'isco'. Longa fermentação.", "Modelagem rústica (broas).", "Forno a lenha/lastro quente."], tips: ["Simplicidade exige técnica.", "Qualidade farinha/fermento crucial."] },
+            { name: "Pão de Azeite", category: "avancados", description: "Pão mediterrâneo com azeite, miolo macio.", ingredients: { finalDough: [{item:"Farinha de Trigo", percentage:100, weightOriginal:"500g", isBaseFlour:true}, {item:"Água", percentage:62, weightOriginal:"310ml"}, {item:"Azeite EV", percentage:10, weightOriginal:"50g"}, {item:"Levain (100% hidr.)", percentage:20, weightOriginal:"100g", isPreFerment:true, preFermentFlourPercentage:10}, {item:"Sal", percentage:2, weightOriginal:"10g"}, {item:"(Opcional) Ervas", weightOriginal:""}] }, instructions: ["Mistura: Azeite gradual.", "Fermentações e modelagem: Padrão.", "Pode ser focaccia ou pães individuais."], tips: ["Use azeite de boa qualidade.", "Massa macia e elástica."] },
+            { 
+                name: "Pão de Nozes e Cranberry com Levain", category: "avancados",
+                description: "Pão rústico de fermentação natural com a doçura das cranberries e a crocância das nozes, miolo macio e casca crocante.",
+                ingredients: {
+                    levain: [ {item: "Farinha de Trigo Integral", percentage: 100, weightOriginal:"75g", isBaseFlourPart: true}, {item: "Água", percentage: 100, weightOriginal:"75g"}, {item: "Starter de Levain Maduro (refresco 1:2:2)", percentage: 20, weightOriginal:"15g"} ],
+                    finalDough: [ {item: "Farinha de Trigo Branca (forte)", percentage: 80, weightOriginal: "400g", isBaseFlourPart: true}, {item: "Farinha de Trigo Integral", percentage: 20, weightOriginal: "100g", isBaseFlourPart: true}, {item: "Água Morna", percentage: 72, weightOriginal: "360g"}, {item: "Sal Marinho", percentage: 2, weightOriginal: "10g"}, {item: "Todo o Levain Preparado", percentage: null, weightOriginal: "165g", isPreFerment: true, preFermentFlourPercentage: (75 / 500) * 100 }, {item: "Nozes Picadas Grosseiramente", percentage: 20, weightOriginal: "100g"}, {item: "Cranberries Secas", percentage: 15, weightOriginal: "75g"} ]
+                },
+                instructions: [ "Preparo do Levain: Misture os ingredientes do levain e deixe fermentar por 4-6 horas a 25-28°C, ou até triplicar de volume e apresentar muitas bolhas.", "Autólise (Opcional): Misture as farinhas da massa final com a água da massa final. Deixe descansar por 30-60 minutos.", "Mistura: Adicione o levain à mistura da autólise (ou às farinhas e água). Misture até incorporar. Adicione o sal. Sove (método de dobras ou amassadeira) até desenvolver o glúten parcialmente (ponto de véu fraco).", "Adição dos Nuts/Frutas: Adicione as nozes e cranberries na última parte da sova ou durante as primeiras dobras, para não quebrar demais o glúten.", "Primeira Fermentação (Bulk): Aproximadamente 3-4 horas a 24-26°C. Faça 3-4 séries de dobras (stretch and folds) nos primeiros 90-120 minutos.", "Divisão e Pré-Modelagem: Divida a massa no tamanho desejado. Pré-modele levemente em formato de bola ou oval. Deixe descansar por 20-30 minutos, coberto.", "Modelagem Final: Modele no formato final (boule, bâtard).", "Segunda Fermentação (Final Proof): Pode ser feita em temperatura ambiente por 1-2 horas, ou retardada a frio na geladeira (4-6°C) por 12-18 horas em um banneton bem enfarinhado.", "Preparo para Assar: Pré-aqueça o forno com uma panela de ferro fundido (Dutch oven) ou pedra de cozimento a 230-250°C.", "Cocção: Transfira a massa para a panela/pedra quente. Faça cortes (scoring) na superfície. Asse com vapor nos primeiros 20-25 minutos (tampado se usar panela). Reduza a temperatura para 210-220°C e asse por mais 15-25 minutos (destampado), ou até o pão atingir uma cor dourada escura e temperatura interna de 96-98°C.", "Resfriamento: Deixe esfriar completamente em uma grade por pelo menos 1-2 horas antes de fatiar." ],
+                tips: [ "Hidrate as cranberries em água morna por 15 minutos antes de usar, escorra bem. Isso evita que ressequem o pão.", "Tostar levemente as nozes antes de incorporar realça o sabor.", "Ajuste a hidratação da massa final conforme a absorção da sua farinha." ]
+            },
+            { 
+                name: "Focaccia de Alta Hidratação com Biga", category: "avancados",
+                description: "Focaccia italiana com miolo extremamente aerado e macio, graças à alta hidratação e à maturação da Biga. Coberta com tomates cereja, alecrim fresco e sal grosso.",
+                ingredients: {
+                    biga: [ {item: "Farinha de Trigo Forte (Tipo 00 ou similar)", percentage: 100, weightOriginal:"200g", isBaseFlourPart: true}, {item: "Água (fria, aprox. 15°C)", percentage: 50, weightOriginal:"100g"}, {item: "Fermento Biológico Fresco OU", percentage: 0.5, weightOriginal:"1g"}, {item: "FSI (Fermento Seco Instantâneo)", percentage: 0.16, weightOriginal:"0.3g"} ],
+                    finalDough: [ {item: "Farinha de Trigo Forte (Tipo 00 ou similar)", percentage: 100, weightOriginal: "300g", isBaseFlour: true}, {item: "Água Gelada", percentage: 80, weightOriginal: "240g"}, {item: "Azeite de Oliva Extra Virgem", percentage: 10, weightOriginal: "30g"}, {item: "Sal Marinho Fino", percentage: 2.5, weightOriginal: "7.5g"}, {item: "Malte Diastático em Pó (opcional)", percentage: 1, weightOriginal:"3g"}, {item: "Toda a Biga Maturada", percentage: null, weightOriginal: "301g", isPreFerment: true, preFermentFlourPercentage: (200 / 500) * 100 } ],
+                    cobertura: [ {item: "Tomates Cereja (cortados ao meio)", weightOriginal:"150g"}, {item: "Ramos de Alecrim Fresco", weightOriginal:"a gosto"}, {item: "Azeite de Oliva Extra Virgem", weightOriginal:"para regar"}, {item: "Flor de Sal ou Sal Grosso", weightOriginal:"para polvilhar"} ]
+                },
+                instructions: [ "Preparo da Biga: Misture os ingredientes da biga até formar uma massa firme e um pouco seca. Cubra e deixe fermentar em temperatura ambiente (18-20°C) por 12-16 horas, ou na geladeira (4-6°C) por 24-48 horas.", "Mistura da Massa Final: Em uma tigela grande ou na batedeira, coloque a farinha da massa final, a biga picada em pedaços, o malte (se usar) e a maior parte da água gelada. Misture em velocidade baixa até incorporar.", "Adicione o sal e o restante da água aos poucos, aumentando a velocidade da batedeira (se usar) para média. Bata até a massa começar a desenvolver o glúten e se soltar das laterais da tigela (massa muito macia e pegajosa).", "Adicione o azeite de oliva aos poucos, continuando a bater até que seja totalmente incorporado e a massa fique lisa e elástica, mas ainda muito macia.", "Primeira Fermentação (Bulk): Transfira a massa para um recipiente grande untado com azeite. Cubra e deixe fermentar por 1h30 a 2 horas, fazendo 2-3 séries de dobras na tigela (com as mãos molhadas ou untadas de azeite) a cada 30-40 minutos. A massa deve ficar cheia de bolhas.", "Preparo da Assadeira: Unte generosamente uma assadeira retangular (aprox. 30x40cm) com azeite de oliva.", "Descanso e Modelagem na Assadeira: Despeje a massa delicadamente na assadeira. Com as pontas dos dedos untadas de azeite, espalhe a massa cuidadosamente para cobrir o fundo da assadeira, sem rasgar as bolhas. Deixe descansar por 30-45 minutos, coberto.", "Cobertura: Regue a superfície da massa com mais azeite. Com as pontas dos dedos, faça as tradicionais 'covinhas' na focaccia. Distribua os tomates cereja (pressionando levemente na massa) e os ramos de alecrim. Polvilhe com flor de sal.", "Fermentação Final na Assadeira: Deixe fermentar por mais 30-45 minutos, ou até a massa estar visivelmente aerada e macia ao toque.", "Cocção: Pré-aqueça o forno a 220-230°C. Asse a focaccia por 20-25 minutos, ou até dourar bem na superfície e as bordas ficarem crocantes. Se desejar, nos últimos 5 minutos, borrife um pouco de água com sal na superfície para uma casca mais crocante.", "Finalização: Retire do forno e regue com um fio de azeite fresco, se desejar. Deixe esfriar um pouco na assadeira antes de cortar e servir." ],
+                tips: [ "A alta hidratação é o segredo para os alvéolos grandes. Manuseie a massa com delicadeza e mãos untadas.", "Não tenha medo de usar bastante azeite, é característico da focaccia.", "Varie a cobertura com azeitonas, cebola roxa fatiada, queijo parmesão, etc." ]
+            },
+            { 
+                name: "Pão Multigrãos Enriquecido com Soaker", category: "avancados",
+                description: "Pão de forma ou filão altamente nutritivo e saboroso, combinando diferentes farinhas integrais, uma variedade de sementes hidratadas (soaker) para textura e umidade, e um toque adocicado de mel.",
+                ingredients: {
+                    soaker: [ {item: "Sementes de Linhaça Dourada ou Marrom", weightOriginal:"30g"}, {item: "Sementes de Girassol (sem casca)", weightOriginal:"30g"}, {item: "Sementes de Gergelim Branco ou Preto", weightOriginal:"20g"}, {item: "Sementes de Chia (opcional)", weightOriginal:"10g"}, {item: "Água Morna (suficiente para cobrir as sementes)", weightOriginal:"Aprox. 100-120ml"} ],
+                    finalDough: [ {item: "Farinha de Trigo Branca (forte)", percentage: 50, weightOriginal: "250g", isBaseFlourPart: true}, {item: "Farinha de Trigo Integral Fina", percentage: 30, weightOriginal: "150g", isBaseFlourPart: true}, {item: "Farinha de Centeio Clara ou Média", percentage: 20, weightOriginal: "100g", isBaseFlourPart: true}, {item: "Água Morna (aproximadamente 35°C)", percentage: 65, weightOriginal: "325g"}, {item: "Leite em Pó Integral (opcional, para maciez)", percentage: 4, weightOriginal: "20g"}, {item: "Mel de Flores Silvestres (ou outro)", percentage: 6, weightOriginal: "30g"}, {item: "Sal Marinho Fino", percentage: 2, weightOriginal: "10g"}, {item: "Fermento Biológico Seco Instantâneo (FSI)", percentage: 1.4, weightOriginal: "7g"}, {item: "Manteiga Sem Sal Amolecida", percentage: 6, weightOriginal: "30g"}, {item: "Todo o Soaker (escorrido, se houver excesso de água)", percentage: null, weightOriginal: "Aprox. 180-200g após hidratação"} ]
+                },
+                instructions: [ "Preparo do Soaker: Misture todas as sementes do soaker com a água morna. Deixe hidratar por pelo menos 1-2 horas, ou idealmente de um dia para o outro na geladeira. Escorra qualquer excesso de água antes de usar.", "Mistura da Massa Final: Em uma tigela grande ou na batedeira com gancho, misture as farinhas, o leite em pó (se usar) e o fermento. Adicione o mel, a maior parte da água morna e o soaker.", "Misture em velocidade baixa até formar uma massa. Adicione o sal. Continue misturando/sovando, adicionando o restante da água aos poucos, se necessário, até a massa ficar homogênea.", "Adição da Manteiga: Adicione a manteiga amolecida em pedaços pequenos, sovando até que seja totalmente incorporada e a massa desenvolva um bom glúten (ponto de véu médio). A massa deve ser macia e um pouco pegajosa.", "Primeira Fermentação (Bulk): Coloque a massa em um recipiente levemente untado, cubra e deixe fermentar em local morno (24-26°C) por cerca de 60-90 minutos, ou até dobrar de volume.", "Divisão e Pré-Modelagem: Retire o ar da massa delicadamente. Divida em uma ou duas porções, dependendo do tamanho do pão desejado. Pré-modele em formato de bola ou cilindro.", "Descanso Intermediário: Cubra as porções e deixe descansar por 15-20 minutos.", "Modelagem Final: Modele no formato final desejado (pão de forma, filão/bâtard). Se usar forma de pão, unte-a.", "Segunda Fermentação (Final Proof): Coloque a massa modelada na forma ou em uma assadeira preparada. Cubra e deixe fermentar em local morno por 45-75 minutos, ou até quase dobrar de volume e a massa parecer fofa ao toque.", "Preparo para Assar: Pré-aqueça o forno a 200°C (180°C se for forno com convecção). Se desejar, pincele o topo do pão com um pouco de água ou ovo batido e polvilhe com mais sementes.", "Cocção: Asse por 35-45 minutos, ou até o pão estar bem dourado e soar oco ao bater na parte de baixo. A temperatura interna deve ser de 94-96°C.", "Resfriamento: Retire o pão da forma imediatamente após assar e deixe esfriar completamente em uma grade antes de fatiar. Isso evita que o miolo fique úmido." ],
+                tips: [ "O soaker é fundamental para manter a umidade e adicionar textura ao pão multigrãos. Não pule esta etapa.", "Sinta-se à vontade para variar os tipos de sementes no soaker de acordo com sua preferência (ex: aveia em flocos, semente de abóbora).", "A farinha de centeio adiciona um sabor característico. Se preferir um sabor mais suave, pode substituí-la por mais farinha integral de trigo.", "Este pão é ótimo para sanduíches ou consumido puro com manteiga ou geleia." ]
+            }
+        ];
+        
+        const defaultCreamsAndFillingsData = [
+            { name: "Creme de Confeiteiro", category: "cremes_recheios", type: "page", contentKey: "creme_confeiteiro_detalhado_content", description: "Base clássica para recheios." },
+            { name: "Chantilly", category: "cremes_recheios", type: "page", contentKey: "chantilly_content", description: "Creme leve e aerado." },
+            { name: "Creme de Manteiga", category: "cremes_recheios", type: "page", contentKey: "buttercream_content", description: "Versátil para coberturas e recheios." },
+            { name: "Ganache", category: "cremes_recheios", type: "page", contentKey: "ganache_content", description: "Mistura rica de chocolate e natas." },
+            { name: "Creme de Limão (Lemon Curd)", category: "cremes_recheios", type: "page", contentKey: "lemon_curd_content", description: "Creme ácido e doce de limão." },
+            { name: "Recheios de Fruta", category: "cremes_recheios", type: "page", contentKey: "fruit_fillings_content", description: "Compotas, geleias e coulis." },
+            { name: "Creme Belga", category: "cremes_recheios", type: "page", contentKey: "creme_belga_content", description: "Creme branco suave e popular." },
+            { name: "Creme de Leite Ninho", category: "cremes_recheios", type: "page", contentKey: "creme_leite_ninho_content", description: "Creme com sabor característico de leite em pó." },
+            { name: "Doce de Leite", category: "cremes_recheios", type: "page", contentKey: "doce_leite_content", description: "Doce espesso e caramelizado de leite." }
+        ];
+        
+        // --- LÓGICA PRINCIPAL DA APLICAÇÃO ---
+        let recipes = []; 
+
+        const recipeNav = document.getElementById('recipeNav');
+        const recipeContentDiv = document.getElementById('recipeContent'); 
+        const recipeContentContainer = document.getElementById('recipeContentContainer');
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const sidebar = document.getElementById('sidebar');
+        const contentOverlay = document.getElementById('contentOverlay');
+        
+        const printRecipeButton = document.getElementById('printRecipeButton');
+        const editRecipeButton = document.getElementById('editRecipeButton');
+        const saveRecipeChangesButton = document.getElementById('saveRecipeChangesButton');
+        const cancelEditButton = document.getElementById('cancelEditButton');
+        const downloadApostilaButton = document.getElementById('downloadApostilaButton'); 
+        const restoreDefaultRecipesButton = document.getElementById('restoreDefaultRecipesButton');
+
+        const flourCalculatorContainer = document.createElement('div');
+              flourCalculatorContainer.id = 'flourCalculatorContainer';
+              flourCalculatorContainer.classList.add('my-4', 'p-4', 'border', 'border-slate-300', 'rounded-md', 'bg-slate-50', 'no-print'); 
+
+        let currentRecipeForSaving = null; 
+        let currentRecipeOriginalData = null; 
+        let isEditMode = false;
+
+        function loadDefaultRecipes() {
+            defaultBasicRecipesData.forEach(r => r.category = "basicos");
+            defaultBuffetRecipesData.forEach(r => r.category = "buffet");
+            defaultFrenchRecipesData.forEach(r => r.category = "franceses");
+            defaultAllAdvancedRecipeData.forEach(r => r.category = "avancados");
+            defaultCreamsAndFillingsData.forEach(r => { r.category = "cremes_recheios"; r.type = "page"; });
+
+            recipes = [
+                ...JSON.parse(JSON.stringify(defaultBasicRecipesData)), 
+                ...JSON.parse(JSON.stringify(defaultBuffetRecipesData)),
+                ...JSON.parse(JSON.stringify(defaultFrenchRecipesData)),
+                ...JSON.parse(JSON.stringify(defaultAllAdvancedRecipeData)),
+                ...JSON.parse(JSON.stringify(defaultCreamsAndFillingsData)) 
+            ];
+        }
+
+        const defaultFermentationSubmenuData = [ 
+            { name: "Levain (Fermento Natural)", contentKey: "levain_content", category: "fermentacao_submenu", type: "page" },
+            { name: "Biga", contentKey: "biga_content", category: "fermentacao_submenu", type: "page" },
+            { name: "Poolish", contentKey: "poolish_content", category: "fermentacao_submenu", type: "page" },
+            { name: "Pâte Fermentée (Massa Velha)", contentKey: "pate_fermentee_content", category: "fermentacao_submenu", type: "page" },
+            { name: "Esponja", contentKey: "esponja_content", category: "fermentacao_submenu", type: "page" }
+        ];
+
+        function initializeRecipes() {
+            const storedRecipes = localStorage.getItem('apostilaPãesRecipes');
+            if (storedRecipes) {
+                try {
+                    recipes = JSON.parse(storedRecipes);
+                    const hasPageCategories = recipes.some(r => (r.category === 'cremes_recheios' || r.category === 'fermentacao_submenu') && r.type === 'page');
+                    if (!hasPageCategories && (defaultCreamsAndFillingsData.length > 0 || defaultFermentationSubmenuData.length > 0) ) { 
+                        console.log("LocalStorage antigo detectado ou sem categorias de página, recarregando defaults.");
+                        loadDefaultRecipes();
+                        saveRecipesToLocalStorage(); 
+                    } else {
+                         console.log("Receitas carregadas do localStorage.");
+                    }
+                } catch (e) {
+                    console.error("Erro ao carregar/parsear receitas do localStorage:", e);
+                    loadDefaultRecipes(); 
+                }
+            } else {
+                loadDefaultRecipes();
+                console.log("Nenhuma receita salva localmente. Carregando receitas padrão.");
+            }
+        }
+        
+        function saveRecipesToLocalStorage() {
+            try {
+                localStorage.setItem('apostilaPãesRecipes', JSON.stringify(recipes));
+                console.log("Receitas salvas no localStorage.");
+            } catch (e) {
+                console.error("Erro ao salvar no localStorage:", e);
+                alert("Erro ao salvar localmente. Verifique as permissões do navegador ou se o localStorage está cheio.");
+            }
+        }
+
+        restoreDefaultRecipesButton.addEventListener('click', () => {
+            if (confirm("Tem certeza que deseja restaurar todas as receitas para o padrão original? Todas as alterações salvas localmente serão perdidas.")) {
+                localStorage.removeItem('apostilaPãesRecipes');
+                loadDefaultRecipes(); 
+                populateNav(); 
+                recipeContentDiv.innerHTML = '<p class="text-lg text-center text-slate-500">Receitas restauradas para o padrão. Selecione uma receita ou seção ao lado para começar.</p>';
+                printRecipeButton.style.display = 'none';
+                editRecipeButton.style.display = 'none';
+                saveRecipeChangesButton.style.display = 'none';
+                cancelEditButton.style.display = 'none';
+                flourCalculatorContainer.style.display = 'none';
+                restoreDefaultRecipesButton.style.display = 'none'; 
+            }
+        });
+
+        downloadApostilaButton.addEventListener('click', () => {
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0'); 
+            const year = today.getFullYear();
+            const formattedDate = `${day}-${month}-${year}`;
+            const filename = `Apostila_Atualizada_${formattedDate}.html`;
+            
+            const pageHtml = document.documentElement.outerHTML;
+            const blob = new Blob([pageHtml], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert(`Download da apostila iniciado como "${filename}".\n\nLembrete: Para que um amigo veja SUAS alterações, a melhor forma é: \n1. Salve suas alterações localmente aqui na apostila.\n2. Use a opção "Salvar Página Como..." do seu navegador para criar uma cópia do arquivo HTML. Essa cópia conterá suas alterações.`);
+        });
+
+        function setEditableState(isEditable) {
+            isEditMode = isEditable; 
+            
+            const recipeDescDiv = recipeContentDiv.querySelector('#recipeDescription');
+            const ingredientsTables = recipeContentDiv.querySelectorAll('table[data-section-key]');
+            const instructionsOList = recipeContentDiv.querySelector('#instructionsList');
+            const tipsUList = recipeContentDiv.querySelector('#tipsList');
+
+            recipeContentDiv.querySelectorAll('.add-btn-container').forEach(c => c.remove());
+
+            if (isEditable) {
+                if (recipeDescDiv) {
+                    const currentText = recipeDescDiv.textContent || ""; 
+                    recipeDescDiv.innerHTML = `<textarea class="edit-mode-textarea" data-field="description">${currentText.trim()}</textarea>`;
+                }
+
+                ingredientsTables.forEach(table => {
+                    const sectionKey = table.dataset.sectionKey;
+                    const tbody = table.querySelector('tbody');
+                    if (!tbody) return;
+
+                    Array.from(tbody.rows).forEach(row => {
+                        if (row.cells.length < 3) return; 
+
+                        const itemText = row.cells[0].textContent.trim();
+                        const percentageText = row.cells[1].textContent.replace('%','').trim();
+                        const weightText = row.cells[2].textContent.trim();
+
+                        row.cells[0].innerHTML = `<input type="text" class="edit-mode-input" value="${itemText}">`;
+                        row.cells[1].innerHTML = `<input type="text" class="edit-mode-input" value="${percentageText}">`;
+                        row.cells[2].innerHTML = `<input type="text" class="edit-mode-input" value="${weightText}">`;
+                        
+                        if (row.cells.length === 3) { 
+                            const removeBtnCell = row.insertCell(-1);
+                            removeBtnCell.innerHTML = `<button class="remove-btn" title="Remover Ingrediente">🗑️</button>`;
+                            removeBtnCell.querySelector('button').onclick = function() { this.closest('tr').remove(); };
+                        } else if (row.cells.length === 4 && !row.cells[3].querySelector('button')) {
+                             row.cells[3].innerHTML = `<button class="remove-btn" title="Remover Ingrediente">🗑️</button>`;
+                             row.cells[3].querySelector('button').onclick = function() { this.closest('tr').remove(); };
+                        }
+                    });
+                    const addBtnContainer = document.createElement('div'); 
+                    addBtnContainer.className = 'add-btn-container mt-2'; 
+                    addBtnContainer.innerHTML = `<button class="add-btn" data-section-key="${sectionKey}">+ Adicionar Ingrediente</button>`;
+                    table.insertAdjacentElement('afterend', addBtnContainer);
+                    addBtnContainer.querySelector('button').onclick = function() { addIngredientRow(this.dataset.sectionKey, tbody); };
+                });
+
+                if (instructionsOList) {
+                    Array.from(instructionsOList.children).forEach(li => {
+                        if (li.tagName === 'LI' && !li.classList.contains('edit-item-li')) { 
+                            const currentText = li.textContent || "";
+                            li.classList.add('edit-item-li');
+                            li.innerHTML = `<textarea class="edit-mode-textarea">${currentText.trim()}</textarea><button class="remove-btn" title="Remover Instrução">🗑️</button>`;
+                            li.querySelector('button').onclick = function() { this.closest('li').remove(); };
+                        }
+                    });
+                    const addInstructionBtnContainer = document.createElement('div');
+                    addInstructionBtnContainer.className = 'add-btn-container';
+                    addInstructionBtnContainer.innerHTML = `<button class="add-btn">+ Adicionar Instrução</button>`;
+                    instructionsOList.insertAdjacentElement('afterend', addInstructionBtnContainer);
+                    addInstructionBtnContainer.querySelector('button').onclick = function() { addListItem(instructionsOList, 'instruction'); };
+                }
+                 if (tipsUList) {
+                    Array.from(tipsUList.children).forEach(li => {
+                         if (li.tagName === 'LI' && !li.classList.contains('edit-item-li')) {
+                            const currentText = li.textContent || "";
+                            li.classList.add('edit-item-li');
+                            li.innerHTML = `<textarea class="edit-mode-textarea">${currentText.trim()}</textarea><button class="remove-btn" title="Remover Dica">🗑️</button>`;
+                            li.querySelector('button').onclick = function() { this.closest('li').remove(); };
+                        }
+                    });
+                    const addTipBtnContainer = document.createElement('div');
+                    addTipBtnContainer.className = 'add-btn-container';
+                    addTipBtnContainer.innerHTML = `<button class="add-btn">+ Adicionar Dica</button>`;
+                    tipsUList.insertAdjacentElement('afterend', addTipBtnContainer);
+                    addTipBtnContainer.querySelector('button').onclick = function() { addListItem(tipsUList, 'tip'); };
+                }
+
+                editRecipeButton.style.display = 'none';
+                saveRecipeChangesButton.style.display = 'inline-flex';
+                cancelEditButton.style.display = 'inline-flex';
+                printRecipeButton.style.display = 'none'; 
+                flourCalculatorContainer.style.display = 'none';
+                restoreDefaultRecipesButton.style.display = 'none';
+            } else { 
+                if (currentRecipeForSaving) {
+                     displayRecipeDetail(currentRecipeForSaving); 
+                }
+            }
+        }
+        
+        function addIngredientRow(sectionKey, tbody) {
+            const newRow = tbody.insertRow(-1); 
+            newRow.insertCell(0).innerHTML = `<input type="text" class="edit-mode-input" value="">`;
+            newRow.insertCell(1).innerHTML = `<input type="text" class="edit-mode-input" value="">`;
+            newRow.insertCell(2).innerHTML = `<input type="text" class="edit-mode-input" value="">`;
+            const removeBtnCell = newRow.insertCell(3);
+            removeBtnCell.innerHTML = `<button class="remove-btn" title="Remover Ingrediente">🗑️</button>`;
+            removeBtnCell.querySelector('button').onclick = function() { this.closest('tr').remove(); };
+        }
+
+        function addListItem(listElement, type) {
+            const newItem = document.createElement('li');
+            newItem.classList.add('edit-item-li');
+            newItem.innerHTML = `<textarea class="edit-mode-textarea"></textarea><button class="remove-btn" title="Remover ${type === 'instruction' ? 'Instrução' : 'Dica'}">🗑️</button>`;
+            newItem.querySelector('button').onclick = function() { this.closest('li').remove(); };
+            listElement.appendChild(newItem);
+        }
+
+        editRecipeButton.addEventListener('click', () => {
+            if (currentRecipeForSaving) {
+                currentRecipeOriginalData = JSON.parse(JSON.stringify(currentRecipeForSaving)); 
+                setEditableState(true);
+            }
+        });
+
+        cancelEditButton.addEventListener('click', () => {
+            if (currentRecipeForSaving && currentRecipeOriginalData) {
+                currentRecipeForSaving = JSON.parse(JSON.stringify(currentRecipeOriginalData));
+                const recipeIndex = recipes.findIndex(r => r.name === currentRecipeOriginalData.name && r.category === currentRecipeOriginalData.category);
+                if (recipeIndex !== -1) {
+                    recipes[recipeIndex] = JSON.parse(JSON.stringify(currentRecipeOriginalData));
+                }
+            }
+            setEditableState(false); 
+            currentRecipeOriginalData = null;
+        });
+
+        saveRecipeChangesButton.addEventListener('click', () => {
+            if (currentRecipeForSaving) {
+                saveRecipeChangesInMemory(currentRecipeForSaving); 
+                saveRecipesToLocalStorage(); 
+            }
+            setEditableState(false); 
+            currentRecipeOriginalData = null; 
+        });
+        
+        function displayRecipeDetail(recipe) {
+            currentRecipeForSaving = JSON.parse(JSON.stringify(recipe)); 
+            isEditMode = false; 
+            
+            flourCalculatorContainer.innerHTML = ''; 
+            
+            printRecipeButton.style.display = 'none'; 
+            editRecipeButton.style.display = 'none';
+            saveRecipeChangesButton.style.display = 'none';
+            cancelEditButton.style.display = 'none';
+            flourCalculatorContainer.style.display = 'none';
+            restoreDefaultRecipesButton.style.display = 'none';
+
+            let recipeDescriptionHtml = `<div id="recipeDescription" class="text-slate-600 mb-6 italic p-2">${recipe.description || ''}</div>`;
+            if (recipe.type === 'page') { 
+                recipeContentDiv.innerHTML = pageContents[recipe.contentKey] || `<h2 class="page-title">${recipe.name}</h2><div id="recipeDescription">${recipe.description || 'Conteúdo em breve.'}</div>`;
+                const oldAddButtons = recipeContentDiv.querySelectorAll('.add-btn-container');
+                oldAddButtons.forEach(btn => btn.remove());
+                return; 
+            }
+
+            editRecipeButton.style.display = 'inline-flex';
+            printRecipeButton.style.display = 'inline-flex';
+            flourCalculatorContainer.style.display = 'block';
+            restoreDefaultRecipesButton.style.display = 'inline-flex';
+
+            let totalOriginalFlourWeight = 0;
+            let baseFlourSectionKey = 'finalDough'; 
+
+            if (recipe.ingredients && recipe.ingredients.finalDough) {
+                const baseFloursInFinalDough = recipe.ingredients.finalDough.filter(ing => ing.isBaseFlour || ing.isBaseFlourPart);
+                if (baseFloursInFinalDough.length > 0) {
+                    totalOriginalFlourWeight = baseFloursInFinalDough.reduce((sum, ing) => {
+                        const weightMatch = String(ing.weightOriginal).match(/(\d+(\.\d+)?)/);
+                        return sum + (weightMatch ? parseFloat(weightMatch[0]) : 0);
+                    }, 0);
+                }
+            }
+            
+            flourCalculatorContainer.innerHTML = `
+                <label for="totalFlourInput-${recipe.name.replace(/\s/g, '-')}" class="block text-sm font-medium text-slate-700">Peso Total da Farinha Base (g):</label>
+                <div class="mt-1 flex rounded-md shadow-sm">
+                    <input type="number" id="totalFlourInput-${recipe.name.replace(/\s/g, '-')}" value="${totalOriginalFlourWeight > 0 ? totalOriginalFlourWeight.toFixed(0) : ''}" class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-none rounded-l-md sm:text-sm border-slate-300 p-2">
+                    <button id="recalculateButton-${recipe.name.replace(/\s/g, '-')}" class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-slate-300 bg-slate-100 text-slate-600 hover:bg-slate-200 sm:text-sm">
+                        Recalcular Pesos
+                    </button>
+                </div>`;
+            
+            if (recipeContentContainer && recipeContentDiv && !flourCalculatorContainer.parentElement) { 
+                 recipeContentContainer.insertBefore(flourCalculatorContainer, recipeContentDiv);
+            }
+
+            const recalculateButton = document.getElementById(`recalculateButton-${recipe.name.replace(/\s/g, '-')}`);
+            if(recalculateButton) { 
+                recalculateButton.addEventListener('click', () => updateIngredientWeights(currentRecipeForSaving, totalOriginalFlourWeight, baseFlourSectionKey));
+            }
+            
+            let ingredientsHtml = '';
+            if(recipe.ingredients) {
+                Object.keys(recipe.ingredients).forEach(key => {
+                    const sectionName = getIngredientSectionName(key);
+                    const ingredientsList = recipe.ingredients[key];
+                    
+                    if (ingredientsList && ingredientsList.length > 0) {
+                        ingredientsHtml += `<h4 class="text-lg font-semibold mt-4 mb-2 text-slate-800">${sectionName}:</h4>
+                                            <table data-section-key="${key}"><thead><tr><th>Item</th><th>% Padeiro</th><th>Peso (g)</th></tr></thead><tbody>`;
+                        ingredientsList.forEach((ing, index) => {
+                            const percentageDisplay = (ing.percentage !== null && ing.percentage !== undefined) ? `${ing.percentage}` : '-'; 
+                            const weightDisplay = ing.weightOriginal || ing.weight || '-'; 
+                            ingredientsHtml += `<tr>
+                                                <td>${ing.item}</td>
+                                                <td>${percentageDisplay}</td>
+                                                <td data-original-percentage="${ing.percentage}" data-is-base-flour-part="${ing.isBaseFlourPart || false}" data-is-pre-ferment="${ing.isPreFerment || false}" data-pre-ferment-flour-percentage="${ing.preFermentFlourPercentage || 0}">${weightDisplay}</td>
+                                              </tr>`;
+                        });
+                        ingredientsHtml += '</tbody></table>';
+                    }
+                });
+            }
+
+            let instructionsHtml = '<ol class="list-decimal list-inside space-y-2 text-slate-700" id="instructionsList">';
+            (recipe.instructions || []).forEach((step) => { 
+                instructionsHtml += `<li>${step}</li>`; 
+            });
+            instructionsHtml += '</ol>';
+
+            let tipsHtml = '<ul class="list-disc list-inside space-y-1" id="tipsList">';
+            (recipe.tips || []).forEach((tip) => { 
+                tipsHtml += `<li>${tip}</li>`; 
+            });
+            tipsHtml += '</ul>';
+            
+            const oldAddButtons = recipeContentDiv.querySelectorAll('.add-btn-container');
+            oldAddButtons.forEach(btn => btn.remove());
+
+            recipeContentDiv.innerHTML = `
+                ${recipeDescriptionHtml}
+                <h3 class="text-xl font-semibold mb-3 text-slate-800">Ingredientes:</h3>
+                ${ingredientsHtml}
+                <h3 class="text-xl font-semibold mt-6 mb-3 text-slate-800">Instruções:</h3>
+                ${instructionsHtml}
+                <div class="dicas-jean p-4 mt-6 rounded-md">
+                    <h4 class="text-lg font-semibold mb-2 text-teal-800">Dicas:</h4>
+                    ${tipsHtml}
+                </div>
+                <div class="mt-8">
+                    <h4 class="text-lg font-semibold mb-2 text-slate-800">Minhas Anotações (para esta sessão):</h4>
+                    <textarea class="w-full h-32 p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Suas observações sobre o teste desta receita..."></textarea>
+                </div>`;
+        }
+
+        function saveRecipeChangesInMemory(recipeObjectToUpdate) {
+            if (!recipeObjectToUpdate) return;
+
+            const descriptionTextarea = recipeContentDiv.querySelector('#recipeDescription textarea[data-field="description"]');
+            if (descriptionTextarea) recipeObjectToUpdate.description = descriptionTextarea.value;
+
+            const newIngredientsData = {};
+            recipeContentDiv.querySelectorAll('table[data-section-key]').forEach(table => {
+                const sectionKey = table.dataset.sectionKey;
+                newIngredientsData[sectionKey] = [];
+                table.querySelectorAll('tbody tr').forEach(row => {
+                    if (row.cells.length < 3 || !row.cells[0].querySelector('input')) return; 
+                    
+                    const itemInput = row.cells[0].querySelector('input');
+                    const percentageInput = row.cells[1].querySelector('input');
+                    const weightInput = row.cells[2].querySelector('input');
+
+                    if (itemInput && percentageInput && weightInput) {
+                         const percentageText = percentageInput.value.trim();
+                         const originalIngDataArray = currentRecipeOriginalData?.ingredients[sectionKey];
+                         let originalIngData = {};
+                         if(originalIngDataArray) {
+                             originalIngData = originalIngDataArray.find(ing => ing.item === itemInput.value.trim()) || {};
+                         }
+                        
+                        newIngredientsData[sectionKey].push({
+                            item: itemInput.value.trim(),
+                            percentage: !isNaN(parseFloat(percentageText)) ? parseFloat(percentageText) : (percentageText === '-' || percentageText === '' ? null : percentageText),
+                            weightOriginal: weightInput.value.trim(),
+                            isBaseFlour: originalIngData.isBaseFlour,
+                            isBaseFlourPart: originalIngData.isBaseFlourPart,
+                            isPreFerment: originalIngData.isPreFerment,
+                            preFermentFlourPercentage: originalIngData.preFermentFlourPercentage
+                        });
+                    }
+                });
+            });
+            recipeObjectToUpdate.ingredients = newIngredientsData;
+            
+            const newInstructions = [];
+            recipeContentDiv.querySelectorAll('#instructionsList li textarea').forEach(textarea => {
+                newInstructions.push(textarea.value.trim());
+            });
+            recipeObjectToUpdate.instructions = newInstructions;
+
+            const newTips = [];
+            recipeContentDiv.querySelectorAll('#tipsList li textarea').forEach(textarea => {
+                newTips.push(textarea.value.trim());
+            });
+            recipeObjectToUpdate.tips = newTips;
+            
+            const recipeIndex = recipes.findIndex(r => r.name === currentRecipeOriginalData.name && r.category === currentRecipeOriginalData.category); 
+            if (recipeIndex !== -1) {
+                recipes[recipeIndex] = JSON.parse(JSON.stringify(recipeObjectToUpdate)); 
+            } else {
+                console.warn("Não foi possível encontrar a receita original no array 'recipes' para atualização pelo nome. A atualização pode não ter sido refletida no array principal se o nome foi alterado.");
+            }
+        }
+        
+        function getIngredientSectionName(key) {
+            switch (key) {
+                case 'poolish': return 'Poolish (Pré-Fermento)';
+                case 'biga': return 'Biga (Pré-Fermento)';
+                case 'soaker': return 'Soaker (Grãos Hidratados)';
+                case 'pateFermentee': return 'Pâte Fermentée (Massa Pré-Fermentada)';
+                case 'levain': return 'Levain (Sourdough Starter)';
+                case 'levainCenteio': return 'Levain de Centeio';
+                case 'lievitoMadre': return 'Lievito Madre';
+                case 'primoImpasto': return 'Primeiro Impasto (1ª Massa)';
+                case 'secondoImpasto': return 'Segundo Impasto (2ª Massa)';
+                case 'sourdoughCenteio': return 'Sourdough de Centeio';
+                case 'massa': return 'Massa Base';
+                case 'recheio': return 'Recheio';
+                case 'recheioCobertura': return 'Recheio/Cobertura';
+                case 'finalizacao': return 'Finalização';
+                case 'finalDough': return 'Massa Final';
+                case 'cobertura': return 'Cobertura';
+                case 'coberturaOpcional': return 'Cobertura (Opcional)';
+                default: 
+                    const name = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    return name.includes('Submenu') ? name.replace('Submenu', ' (Técnicas)') : name;
+            }
+        }
+        
+        function updateIngredientWeights(recipeObject, originalTotalFlourWeight, baseFlourSectionKey = 'finalDough') {
+            const totalFlourInputElement = document.getElementById(`totalFlourInput-${recipeObject.name.replace(/\s/g, '-')}`);
+            if (!totalFlourInputElement) return;
+            const newTotalFlourWeight = parseFloat(totalFlourInputElement.value);
+
+            if (isNaN(newTotalFlourWeight) || newTotalFlourWeight <= 0) {
+                alert("Por favor, insira um valor válido para o peso da farinha.");
+                return;
+            }
+            
+            const scaleFactor = originalTotalFlourWeight > 0 ? newTotalFlourWeight / originalTotalFlourWeight : 1;
+
+            Object.keys(recipeObject.ingredients).forEach(sectionKey => {
+                const table = recipeContentDiv.querySelector(`table[data-section-key="${sectionKey}"]`);
+                if (!table) return;
+                const tbody = table.querySelector('tbody');
+                if(!tbody) return;
+
+                recipeObject.ingredients[sectionKey].forEach((ingredientData, index) => {
+                    const row = tbody.rows[index];
+                    if (!row || row.cells.length < 3) return;
+
+                    const weightCellOrInput = isEditMode ? row.cells[2].querySelector('input') : row.cells[2];
+                    
+                    if (ingredientData.percentage !== null && ingredientData.percentage !== undefined && !isNaN(parseFloat(ingredientData.percentage))) {
+                        let calculatedWeight;
+                        const currentPercentage = parseFloat(ingredientData.percentage);
+
+                        if (sectionKey === baseFlourSectionKey) { 
+                            if (ingredientData.isBaseFlourPart) { 
+                                calculatedWeight = (currentPercentage / 100) * newTotalFlourWeight;
+                            } else if (ingredientData.isBaseFlour) { 
+                                calculatedWeight = newTotalFlourWeight; 
+                            } else { 
+                                calculatedWeight = (currentPercentage / 100) * newTotalFlourWeight;
+                            }
+                        } else if (ingredientData.isPreFerment && ingredientData.preFermentFlourPercentage !== undefined && ingredientData.preFermentFlourPercentage > 0) {
+                            const preFermentBaseFlourWeight = (ingredientData.preFermentFlourPercentage / 100) * newTotalFlourWeight;
+                             calculatedWeight = (currentPercentage / 100) * preFermentBaseFlourWeight;
+                        } else { 
+                            calculatedWeight = (currentPercentage / 100) * newTotalFlourWeight;
+                        }
+                        const newWeightString = calculatedWeight.toFixed(1) + 'g';
+                        if (isEditMode && weightCellOrInput) { weightCellOrInput.value = newWeightString; } 
+                        else if (weightCellOrInput) { weightCellOrInput.textContent = newWeightString; }
+                        ingredientData.weightOriginal = newWeightString; 
+
+                    } else { 
+                        const originalWeightMatch = String(ingredientData.weightOriginal).match(/(\d+(\.\d+)?)/);
+                        if (originalWeightMatch && !isNaN(parseFloat(originalWeightMatch[0])) && (ingredientData.item && !ingredientData.item.toLowerCase().includes("a gosto") && !ingredientData.item.toLowerCase().includes("unidade")) ) {
+                            const scaledWeight = parseFloat(originalWeightMatch[0]) * scaleFactor;
+                            let unit = String(ingredientData.weightOriginal).replace(originalWeightMatch[0], '').trim() || 'g';
+                            if (unit.toLowerCase() === "ml" && (ingredientData.item.toLowerCase().includes("água") || ingredientData.item.toLowerCase().includes("leite"))) unit = "g"; 
+                            
+                            const newWeightString = scaledWeight.toFixed(1) + unit;
+                            if (isEditMode && weightCellOrInput) { weightCellOrInput.value = newWeightString; } 
+                            else if (weightCellOrInput) { weightCellOrInput.textContent = newWeightString; }
+                            ingredientData.weightOriginal = newWeightString;
+                        } else {
+                            if (isEditMode && weightCellOrInput) { weightCellOrInput.value = ingredientData.weightOriginal || ingredientData.weight || '-'; } 
+                            else if (weightCellOrInput) { weightCellOrInput.textContent = ingredientData.weightOriginal || ingredientData.weight || '-'; }
+                        }
+                    }
+                });
+            });
+        }
+        
+        function displayPageContent(htmlContent) {
+            recipeContentDiv.innerHTML = htmlContent;
+            printRecipeButton.style.display = 'none';
+            editRecipeButton.style.display = 'none';
+            saveRecipeChangesButton.style.display = 'none';
+            cancelEditButton.style.display = 'none';
+            flourCalculatorContainer.innerHTML = ''; 
+            flourCalculatorContainer.style.display = 'none';
+            restoreDefaultRecipesButton.style.display = 'none';
+        }
+        
+        function populateNav() {
+            recipeNav.innerHTML = ''; 
+            const categories = {
+                basicos: [], buffet: [], franceses: [], avancados: [],
+                cremes_recheios: [], 
+                fermentacao_submenu: []
+            };
+            
+            defaultCreamsAndFillingsData.forEach(item => categories.cremes_recheios.push(item));
+            defaultFermentationSubmenuData.forEach(item => categories.fermentacao_submenu.push(item));
+
+            recipes.forEach(recipe => {
+                if (recipe.type !== 'page') { 
+                     if (!categories[recipe.category]) {
+                        // console.warn(`Categoria '${recipe.category}' para a receita '${recipe.name}' não existe na estrutura 'categories'. A receita não será adicionada ao menu.`);
+                     } else {
+                        categories[recipe.category].push(recipe);
+                     }
+                }
+            });
+
+            const categoryOrder = ['basicos', 'buffet', 'franceses', 'avancados', 'cremes_recheios', 'fermentacao_submenu']; 
+
+            categoryOrder.forEach(categoryKey => {
+                const categoryItems = categories[categoryKey];
+                if (categoryItems && categoryItems.length > 0) {
+                    const categoryContainer = document.createElement('div');
+                    categoryContainer.classList.add('mb-1'); 
+                    
+                    const categoryButton = document.createElement('button');
+                    categoryButton.classList.add('nav-category-button');
+                    let categoryName = getIngredientSectionName(categoryKey);
+                     if(categoryKey === 'basicos') categoryName = 'Pães Básicos';
+                    else if(categoryKey === 'buffet') categoryName = 'Pães para Buffets';
+                    else if(categoryKey === 'franceses') categoryName = 'Pães Franceses';
+                    else if(categoryKey === 'avancados') categoryName = 'Pães Avançados';
+                    else if(categoryKey === 'cremes_recheios') categoryName = 'Cremes e Recheios';
+                    else if(categoryKey === 'fermentacao_submenu') categoryName = 'Técnicas de Fermentação';
+
+                    categoryButton.innerHTML = `
+                        <span>${categoryName}</span>
+                        <svg class="transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                    `;
+                    
+                    const subMenu = document.createElement('div');
+                    subMenu.classList.add('nav-submenu');
+
+                    categoryItems.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => { 
+                        const navLink = document.createElement('a');
+                        navLink.href = '#';
+                        navLink.textContent = item.name;
+                        navLink.classList.add('nav-item', 'block');
+                        navLink.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            document.querySelectorAll('#recipeNav .nav-item, #recipeNav .nav-page-button').forEach(el => el.classList.remove('active'));
+                            document.querySelectorAll('#recipeNav .nav-category-button').forEach(btn => btn.classList.remove('active-category', 'open'));
+                            document.querySelectorAll('#recipeNav .nav-submenu').forEach(sub => sub.classList.remove('open'));
+                            
+                            navLink.classList.add('active');
+                            categoryButton.classList.add('active-category','open');
+                            subMenu.classList.add('open');
+
+                            if (item.type === 'page') { 
+                                displayPageContent(pageContents[item.contentKey] || `<h2 class="page-title">${item.name}</h2><p>${item.description || 'Conteúdo em breve.'}</p>`);
+                            } else {
+                                const fullRecipeData = recipes.find(r => r.name === item.name && r.category === item.category && r.type !== 'page');
+                                displayRecipeDetail(fullRecipeData || item); 
+                            }
+                             if (window.innerWidth <= 768) {
+                                sidebar.classList.remove('open');
+                                contentOverlay.classList.remove('open');
+                            }
+                        });
+                        subMenu.appendChild(navLink);
+                    });
+
+                    categoryButton.addEventListener('click', (e) => {
+                        e.stopPropagation(); 
+                        const currentlyOpenSubmenu = recipeNav.querySelector('.nav-submenu.open');
+                        const currentlyOpenButton = recipeNav.querySelector('.nav-category-button.open');
+
+                        if (currentlyOpenSubmenu && currentlyOpenSubmenu !== subMenu) {
+                            currentlyOpenSubmenu.classList.remove('open');
+                            if(currentlyOpenButton) currentlyOpenButton.classList.remove('open');
+                        }
+                        categoryButton.classList.toggle('open');
+                        subMenu.classList.toggle('open');
+                    });
+
+                    categoryContainer.appendChild(categoryButton);
+                    categoryContainer.appendChild(subMenu);
+                    recipeNav.appendChild(categoryContainer);
+                }
+            });
+        }
+        
+        // Inicialização da Aplicação
+        initializeRecipes(); 
+        populateNav(); 
+
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            contentOverlay.classList.toggle('open');
+        });
+        contentOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            contentOverlay.classList.remove('open');
+        });
+        printRecipeButton.addEventListener('click', () => {
+            window.print();
+        });
+    </script>
+</body>
+</html>

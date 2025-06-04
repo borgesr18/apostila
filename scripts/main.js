@@ -42,6 +42,13 @@ function loadDefaultRecipes() {
     ];
 }
 
+const defaultFermentationSubmenuData = [ 
+    { name: "Levain (Fermento Natural)", contentKey: "levain_content", category: "fermentacao_submenu", type: "page" },
+    { name: "Biga", contentKey: "biga_content", category: "fermentacao_submenu", type: "page" },
+    { name: "Poolish", contentKey: "poolish_content", category: "fermentacao_submenu", type: "page" },
+    { name: "Pâte Fermentée (Massa Velha)", contentKey: "pate_fermentee_content", category: "fermentacao_submenu", type: "page" },
+    { name: "Esponja", contentKey: "esponja_content", category: "fermentacao_submenu", type: "page" }
+];
 
 function initializeRecipes() {
     const storedRecipes = localStorage.getItem('apostilaPãesRecipes');

@@ -624,9 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
     printRecipeButton.addEventListener('click', () => {
         window.print();
     });
-});
 
-document.addEventListener('DOMContentLoaded', () => {
     addRecipeButton.addEventListener('click', () => {
         const name = prompt('Nome da nova receita:');
         if (!name) return;

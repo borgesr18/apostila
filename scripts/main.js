@@ -15,8 +15,9 @@ const printRecipeButton = document.getElementById('printRecipeButton');
 const editRecipeButton = document.getElementById('editRecipeButton');
 const saveRecipeChangesButton = document.getElementById('saveRecipeChangesButton');
 const cancelEditButton = document.getElementById('cancelEditButton');
-const downloadApostilaButton = document.getElementById('downloadApostilaButton'); 
 const restoreDefaultRecipesButton = document.getElementById('restoreDefaultRecipesButton');
+const addRecipeButton = document.getElementById("addRecipeButton");
+const deleteRecipeButton = document.getElementById("deleteRecipeButton");
 
 const flourCalculatorContainer = document.createElement('div');
       flourCalculatorContainer.id = 'flourCalculatorContainer';
@@ -42,13 +43,6 @@ function loadDefaultRecipes() {
     ];
 }
 
-const defaultFermentationSubmenuData = [ 
-    { name: "Levain (Fermento Natural)", contentKey: "levain_content", category: "fermentacao_submenu", type: "page" },
-    { name: "Biga", contentKey: "biga_content", category: "fermentacao_submenu", type: "page" },
-    { name: "Poolish", contentKey: "poolish_content", category: "fermentacao_submenu", type: "page" },
-    { name: "Pâte Fermentée (Massa Velha)", contentKey: "pate_fermentee_content", category: "fermentacao_submenu", type: "page" },
-    { name: "Esponja", contentKey: "esponja_content", category: "fermentacao_submenu", type: "page" }
-];
 
 function initializeRecipes() {
     const storedRecipes = localStorage.getItem('apostilaPãesRecipes');
@@ -96,27 +90,6 @@ restoreDefaultRecipesButton.addEventListener('click', () => {
         flourCalculatorContainer.style.display = 'none';
         restoreDefaultRecipesButton.style.display = 'none'; 
     }
-});
-
-downloadApostilaButton.addEventListener('click', () => {
-    const today = new Date();
-    const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0'); 
-    const year = today.getFullYear();
-    const formattedDate = `${day}-${month}-${year}`;
-    const filename = `Apostila_Atualizada_${formattedDate}.html`;
-    
-    const pageHtml = document.documentElement.outerHTML;
-    const blob = new Blob([pageHtml], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    alert(`Download da apostila iniciado como "${filename}".\n\nLembrete: Para que um amigo veja SUAS alterações, a melhor forma é: \n1. Salve suas alterações localmente aqui na apostila.\n2. Use a opção "Salvar Página Como..." do seu navegador para criar uma cópia do arquivo HTML. Essa cópia conterá suas alterações.`);
 });
 
 function setEditableState(isEditable) {
@@ -204,6 +177,8 @@ function setEditableState(isEditable) {
         printRecipeButton.style.display = 'none'; 
         flourCalculatorContainer.style.display = 'none';
         restoreDefaultRecipesButton.style.display = 'none';
+        addRecipeButton.style.display = 'none';
+        deleteRecipeButton.style.display = 'none';
     } else { 
         if (currentRecipeForSaving) {
              displayRecipeDetail(currentRecipeForSaving); 
@@ -269,12 +244,14 @@ function displayRecipeDetail(recipe) {
     cancelEditButton.style.display = 'none';
     flourCalculatorContainer.style.display = 'none';
     restoreDefaultRecipesButton.style.display = 'none';
-
+    addRecipeButton.style.display = "inline-flex";
+    deleteRecipeButton.style.display = "inline-flex";
     let recipeDescriptionHtml = `<div id="recipeDescription" class="text-slate-600 mb-6 italic p-2">${recipe.description || ''}</div>`;
     if (recipe.type === 'page') { 
         recipeContentDiv.innerHTML = pageContents[recipe.contentKey] || `<h2 class="page-title">${recipe.name}</h2><div id="recipeDescription">${recipe.description || 'Conteúdo em breve.'}</div>`;
         const oldAddButtons = recipeContentDiv.querySelectorAll('.add-btn-container');
         oldAddButtons.forEach(btn => btn.remove());
+        deleteRecipeButton.style.display = "none";
         return; 
     }
 
@@ -351,6 +328,7 @@ function displayRecipeDetail(recipe) {
     
     const oldAddButtons = recipeContentDiv.querySelectorAll('.add-btn-container');
     oldAddButtons.forEach(btn => btn.remove());
+        deleteRecipeButton.style.display = "none";
 
     recipeContentDiv.innerHTML = `
         ${recipeDescriptionHtml}
@@ -525,6 +503,8 @@ function displayPageContent(htmlContent) {
     editRecipeButton.style.display = 'none';
     saveRecipeChangesButton.style.display = 'none';
     cancelEditButton.style.display = 'none';
+    addRecipeButton.style.display = "inline-flex";
+    deleteRecipeButton.style.display = "none";
     flourCalculatorContainer.innerHTML = ''; 
     flourCalculatorContainer.style.display = 'none';
     restoreDefaultRecipesButton.style.display = 'none';
@@ -627,17 +607,56 @@ function populateNav() {
 }
 
 // Inicialização da Aplicação
-initializeRecipes(); 
-populateNav(); 
+document.addEventListener('DOMContentLoaded', () => {
+    initializeRecipes();
+    populateNav();
 
-mobileMenuButton.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-    contentOverlay.classList.toggle('open');
+    mobileMenuButton.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        contentOverlay.classList.toggle('open');
+    });
+
+    contentOverlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        contentOverlay.classList.remove('open');
+    });
+
+    printRecipeButton.addEventListener('click', () => {
+        window.print();
+    });
 });
-contentOverlay.addEventListener('click', () => {
-    sidebar.classList.remove('open');
-    contentOverlay.classList.remove('open');
-});
-printRecipeButton.addEventListener('click', () => {
-    window.print();
+
+document.addEventListener('DOMContentLoaded', () => {
+    addRecipeButton.addEventListener('click', () => {
+        const name = prompt('Nome da nova receita:');
+        if (!name) return;
+        const category = prompt('Categoria (basicos, buffet, franceses, avancados):', 'basicos');
+        if (!category) return;
+        const newRecipe = { name: name.trim(), category: category.trim(), description: '', ingredients: { finalDough: [] }, instructions: [], tips: [] };
+        recipes.push(newRecipe);
+        saveRecipesToLocalStorage();
+        populateNav();
+        displayRecipeDetail(newRecipe);
+        setEditableState(true);
+        currentRecipeOriginalData = JSON.parse(JSON.stringify(newRecipe));
+    });
+
+    deleteRecipeButton.addEventListener('click', () => {
+        if (!currentRecipeForSaving) return;
+        if (confirm('Tem certeza que deseja excluir esta receita?')) {
+            recipes = recipes.filter(r => !(r.name === currentRecipeForSaving.name && r.category === currentRecipeForSaving.category && r.type !== 'page'));
+            saveRecipesToLocalStorage();
+            populateNav();
+            recipeContentDiv.innerHTML = '<p class="text-lg text-center text-slate-500">Selecione uma receita ou seção ao lado para começar.</p>';
+            printRecipeButton.style.display = 'none';
+            editRecipeButton.style.display = 'none';
+            saveRecipeChangesButton.style.display = 'none';
+            cancelEditButton.style.display = 'none';
+            flourCalculatorContainer.style.display = 'none';
+            restoreDefaultRecipesButton.style.display = 'inline-flex';
+            addRecipeButton.style.display = 'inline-flex';
+            deleteRecipeButton.style.display = 'inline-flex';
+            currentRecipeForSaving = null;
+        }
+    });
 });

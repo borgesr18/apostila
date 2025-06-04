@@ -205,7 +205,7 @@
             text-align: right;
             margin-bottom: 1rem;
         }
-        #printRecipeButton, #saveRecipeChangesButton, #editRecipeButton, #cancelEditButton, #restoreDefaultRecipesButton {
+        #printRecipeButton, #saveRecipeChangesButton, #editRecipeButton, #cancelEditButton, #restoreDefaultRecipesButton, #addRecipeButton, #deleteRecipeButton {
              background-color: #2563EB; 
              color: white;
              font-weight: 600; 
@@ -215,7 +215,7 @@
              box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
              margin-left: 0.5rem; 
         }
-        #printRecipeButton:hover, #saveRecipeChangesButton:hover, #editRecipeButton:hover, #cancelEditButton:hover, #restoreDefaultRecipesButton:hover {
+        #printRecipeButton:hover, #saveRecipeChangesButton:hover, #editRecipeButton:hover, #cancelEditButton:hover, #restoreDefaultRecipesButton:hover, #addRecipeButton:hover, #deleteRecipeButton:hover {
             background-color: #1D4ED8; 
         }
         #editRecipeButton { background-color: #F59E0B; } 
@@ -225,6 +225,10 @@
         #restoreDefaultRecipesButton { background-color: #D9534F; } 
         #restoreDefaultRecipesButton:hover { background-color: #C9302C; }
 
+        #addRecipeButton { background-color: #10B981; }
+        #addRecipeButton:hover { background-color: #059669; }
+        #deleteRecipeButton { background-color: #DC2626; }
+        #deleteRecipeButton:hover { background-color: #B91C1C; }
 
         @media (max-width: 768px) {
             #mobileMenuButton { display: block; position: fixed; top: 1rem; left: 1rem; z-index: 50; background-color: #2563EB; }
@@ -292,6 +296,12 @@
                 </button>
                  <button id="restoreDefaultRecipesButton" style="display: none;">
                     Restaurar Padrão
+                </button>
+                <button id="addRecipeButton" style="display: none;">
+                    + Nova Receita
+                </button>
+                <button id="deleteRecipeButton" style="display: none;">
+                    🗑️ Excluir Receita
                 </button>
             </div>
             <div id="recipeContentContainer" class="content-area p-6 md:p-8">

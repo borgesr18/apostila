@@ -598,17 +598,21 @@ function populateNav() {
 }
 
 // Inicialização da Aplicação
-initializeRecipes(); 
-populateNav(); 
+document.addEventListener('DOMContentLoaded', () => {
+    initializeRecipes();
+    populateNav();
 
-mobileMenuButton.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-    contentOverlay.classList.toggle('open');
-});
-contentOverlay.addEventListener('click', () => {
-    sidebar.classList.remove('open');
-    contentOverlay.classList.remove('open');
-});
-printRecipeButton.addEventListener('click', () => {
-    window.print();
+    mobileMenuButton.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        contentOverlay.classList.toggle('open');
+    });
+
+    contentOverlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        contentOverlay.classList.remove('open');
+    });
+
+    printRecipeButton.addEventListener('click', () => {
+        window.print();
+    });
 });

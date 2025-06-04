@@ -15,7 +15,6 @@ const printRecipeButton = document.getElementById('printRecipeButton');
 const editRecipeButton = document.getElementById('editRecipeButton');
 const saveRecipeChangesButton = document.getElementById('saveRecipeChangesButton');
 const cancelEditButton = document.getElementById('cancelEditButton');
-const downloadApostilaButton = document.getElementById('downloadApostilaButton'); 
 const restoreDefaultRecipesButton = document.getElementById('restoreDefaultRecipesButton');
 
 const flourCalculatorContainer = document.createElement('div');
@@ -89,27 +88,6 @@ restoreDefaultRecipesButton.addEventListener('click', () => {
         flourCalculatorContainer.style.display = 'none';
         restoreDefaultRecipesButton.style.display = 'none'; 
     }
-});
-
-downloadApostilaButton.addEventListener('click', () => {
-    const today = new Date();
-    const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0'); 
-    const year = today.getFullYear();
-    const formattedDate = `${day}-${month}-${year}`;
-    const filename = `Apostila_Atualizada_${formattedDate}.html`;
-    
-    const pageHtml = document.documentElement.outerHTML;
-    const blob = new Blob([pageHtml], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    alert(`Download da apostila iniciado como "${filename}".\n\nLembrete: Para que um amigo veja SUAS alterações, a melhor forma é: \n1. Salve suas alterações localmente aqui na apostila.\n2. Use a opção "Salvar Página Como..." do seu navegador para criar uma cópia do arquivo HTML. Essa cópia conterá suas alterações.`);
 });
 
 function setEditableState(isEditable) {

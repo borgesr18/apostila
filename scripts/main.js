@@ -16,6 +16,8 @@ const editRecipeButton = document.getElementById('editRecipeButton');
 const saveRecipeChangesButton = document.getElementById('saveRecipeChangesButton');
 const cancelEditButton = document.getElementById('cancelEditButton');
 const restoreDefaultRecipesButton = document.getElementById('restoreDefaultRecipesButton');
+const addRecipeButton = document.getElementById("addRecipeButton");
+const deleteRecipeButton = document.getElementById("deleteRecipeButton");
 
 const flourCalculatorContainer = document.createElement('div');
       flourCalculatorContainer.id = 'flourCalculatorContainer';
@@ -175,6 +177,8 @@ function setEditableState(isEditable) {
         printRecipeButton.style.display = 'none'; 
         flourCalculatorContainer.style.display = 'none';
         restoreDefaultRecipesButton.style.display = 'none';
+        addRecipeButton.style.display = 'none';
+        deleteRecipeButton.style.display = 'none';
     } else { 
         if (currentRecipeForSaving) {
              displayRecipeDetail(currentRecipeForSaving); 
@@ -240,12 +244,14 @@ function displayRecipeDetail(recipe) {
     cancelEditButton.style.display = 'none';
     flourCalculatorContainer.style.display = 'none';
     restoreDefaultRecipesButton.style.display = 'none';
-
+    addRecipeButton.style.display = "inline-flex";
+    deleteRecipeButton.style.display = "inline-flex";
     let recipeDescriptionHtml = `<div id="recipeDescription" class="text-slate-600 mb-6 italic p-2">${recipe.description || ''}</div>`;
     if (recipe.type === 'page') { 
         recipeContentDiv.innerHTML = pageContents[recipe.contentKey] || `<h2 class="page-title">${recipe.name}</h2><div id="recipeDescription">${recipe.description || 'Conteúdo em breve.'}</div>`;
         const oldAddButtons = recipeContentDiv.querySelectorAll('.add-btn-container');
         oldAddButtons.forEach(btn => btn.remove());
+        deleteRecipeButton.style.display = "none";
         return; 
     }
 
@@ -322,6 +328,7 @@ function displayRecipeDetail(recipe) {
     
     const oldAddButtons = recipeContentDiv.querySelectorAll('.add-btn-container');
     oldAddButtons.forEach(btn => btn.remove());
+        deleteRecipeButton.style.display = "none";
 
     recipeContentDiv.innerHTML = `
         ${recipeDescriptionHtml}
@@ -496,6 +503,8 @@ function displayPageContent(htmlContent) {
     editRecipeButton.style.display = 'none';
     saveRecipeChangesButton.style.display = 'none';
     cancelEditButton.style.display = 'none';
+    addRecipeButton.style.display = "inline-flex";
+    deleteRecipeButton.style.display = "none";
     flourCalculatorContainer.innerHTML = ''; 
     flourCalculatorContainer.style.display = 'none';
     restoreDefaultRecipesButton.style.display = 'none';
@@ -614,5 +623,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     printRecipeButton.addEventListener('click', () => {
         window.print();
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    addRecipeButton.addEventListener('click', () => {
+        const name = prompt('Nome da nova receita:');
+        if (!name) return;
+        const category = prompt('Categoria (basicos, buffet, franceses, avancados):', 'basicos');
+        if (!category) return;
+        const newRecipe = { name: name.trim(), category: category.trim(), description: '', ingredients: { finalDough: [] }, instructions: [], tips: [] };
+        recipes.push(newRecipe);
+        saveRecipesToLocalStorage();
+        populateNav();
+        displayRecipeDetail(newRecipe);
+        setEditableState(true);
+        currentRecipeOriginalData = JSON.parse(JSON.stringify(newRecipe));
+    });
+
+    deleteRecipeButton.addEventListener('click', () => {
+        if (!currentRecipeForSaving) return;
+        if (confirm('Tem certeza que deseja excluir esta receita?')) {
+            recipes = recipes.filter(r => !(r.name === currentRecipeForSaving.name && r.category === currentRecipeForSaving.category && r.type !== 'page'));
+            saveRecipesToLocalStorage();
+            populateNav();
+            recipeContentDiv.innerHTML = '<p class="text-lg text-center text-slate-500">Selecione uma receita ou seção ao lado para começar.</p>';
+            printRecipeButton.style.display = 'none';
+            editRecipeButton.style.display = 'none';
+            saveRecipeChangesButton.style.display = 'none';
+            cancelEditButton.style.display = 'none';
+            flourCalculatorContainer.style.display = 'none';
+            restoreDefaultRecipesButton.style.display = 'inline-flex';
+            addRecipeButton.style.display = 'inline-flex';
+            deleteRecipeButton.style.display = 'inline-flex';
+            currentRecipeForSaving = null;
+        }
     });
 });

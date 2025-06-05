@@ -116,7 +116,7 @@ restoreDefaultRecipesButton.addEventListener('click', () => {
         localStorage.removeItem('apostilaPãesNotes');
         recipeNotes = {};
         loadDefaultRecipes();
-        populateNav(); 
+        populateNav();
         recipeContentDiv.innerHTML = '<p class="text-lg text-center text-slate-500">Receitas restauradas para o padrão. Selecione uma receita ou seção ao lado para começar.</p>';
         printRecipeButton.style.display = 'none';
         editRecipeButton.style.display = 'none';
@@ -415,7 +415,6 @@ function saveRecipeChangesInMemory(recipeObjectToUpdate) {
                  if(originalIngDataArray) {
                      originalIngData = originalIngDataArray.find(ing => ing.item === itemInput.value.trim()) || {};
                  }
-
                 newIngredientsData[sectionKey].push({
                     item: itemInput.value.trim(),
                     percentage: !isNaN(parseFloat(percentageText)) ? parseFloat(percentageText) : (percentageText === '-' || percentageText === '' ? null : percentageText),

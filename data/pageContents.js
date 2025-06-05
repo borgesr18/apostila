@@ -199,8 +199,3 @@ export const pageContents = {
         <p><strong>Usos Comuns:</strong> Recheio de bolos, tortas, churros, croissants, pães doces, alfajores, ou consumido puro.</p>
     `
 };
-
-        <p><strong>Usos Comuns:</strong> Recheio de bolos, tortas, churros, croissants, pães doces, alfajores, ou consumido puro.</p>
-    `
-};
-

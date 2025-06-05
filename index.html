@@ -205,18 +205,20 @@
             text-align: right;
             margin-bottom: 1rem;
         }
-        #printRecipeButton, #saveRecipeChangesButton, #editRecipeButton, #cancelEditButton, #restoreDefaultRecipesButton, #addRecipeButton, #deleteRecipeButton {
-             background-color: #2563EB; 
-             color: white;
-             font-weight: 600; 
-             padding-top: 0.5rem; padding-bottom: 0.5rem; 
-             padding-left: 1rem; padding-right: 1rem; 
-             border-radius: 0.375rem; 
-             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
-             margin-left: 0.5rem; 
+        #printRecipeButton, #saveRecipeChangesButton, #editRecipeButton, #cancelEditButton, #restoreDefaultRecipesButton, #addRecipeButton, #deleteRecipeButton, #changePasswordButton, #toggleThemeButton {
+            background-color: #2563EB;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            margin-left: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
         }
-        #printRecipeButton:hover, #saveRecipeChangesButton:hover, #editRecipeButton:hover, #cancelEditButton:hover, #restoreDefaultRecipesButton:hover, #addRecipeButton:hover, #deleteRecipeButton:hover {
-            background-color: #1D4ED8; 
+        #printRecipeButton:hover, #saveRecipeChangesButton:hover, #editRecipeButton:hover, #cancelEditButton:hover, #restoreDefaultRecipesButton:hover, #addRecipeButton:hover, #deleteRecipeButton:hover, #changePasswordButton:hover, #toggleThemeButton:hover {
+            background-color: #3B82F6;
+            transform: translateY(-2px);
         }
         #editRecipeButton { background-color: #F59E0B; } 
         #editRecipeButton:hover { background-color: #D97706; } 
@@ -229,6 +231,10 @@
         #addRecipeButton:hover { background-color: #059669; }
         #deleteRecipeButton { background-color: #DC2626; }
         #deleteRecipeButton:hover { background-color: #B91C1C; }
+        #changePasswordButton { background-color: #0EA5E9; }
+        #changePasswordButton:hover { background-color: #0284C7; }
+        #toggleThemeButton { background-color: #6B7280; }
+        #toggleThemeButton:hover { background-color: #4B5563; }
 
         @media (max-width: 768px) {
             #mobileMenuButton { display: block; position: fixed; top: 1rem; left: 1rem; z-index: 50; background-color: #2563EB; }
@@ -255,6 +261,32 @@
             textarea { border: 1px dashed #ccc !important; background-color: #f9f9f9 !important; display: block; width: 100%; min-height: 50px; }
             .no-print { display: none !important; }
         }
+
+        /* Tema escuro */
+        .dark-mode {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .dark-mode .sidebar {
+            background-color: #1e293b;
+        }
+        .dark-mode .content-area {
+            background-color: #1e293b;
+            color: #f8fafc;
+        }
+        .dark-mode .nav-category-button,
+        .dark-mode .nav-page-button,
+        .dark-mode .nav-item {
+            color: #bae6fd;
+        }
+        .dark-mode .nav-category-button:hover,
+        .dark-mode .nav-page-button:hover,
+        .dark-mode .nav-item:hover {
+            background-color: #0c4a6e;
+            color: #ffffff;
+        }
+        .dark-mode header h1 { color: #93c5fd; }
+        .dark-mode header p { color: #cbd5e1; }
     </style>
 </head>
 <body>
@@ -266,6 +298,7 @@
         </button>
 
         <aside id="sidebar" class="sidebar p-4 space-y-0">
+            <input id="searchInput" type="text" placeholder="Buscar..." class="w-full mb-4 p-2 rounded-md text-sm text-slate-700" />
             <nav id="recipeNav" class="space-y-0">
             </nav>
         </aside>
@@ -302,6 +335,12 @@
                 </button>
                 <button id="deleteRecipeButton" style="display: none;">
                     🗑️ Excluir Receita
+                </button>
+                <button id="changePasswordButton">
+                    🔑 Definir Senha
+                </button>
+                <button id="toggleThemeButton">
+                    🌙 Tema Escuro
                 </button>
             </div>
             <div id="recipeContentContainer" class="content-area p-6 md:p-8">

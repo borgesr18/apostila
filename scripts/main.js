@@ -453,7 +453,7 @@ function saveRecipeChangesInMemory(recipeObjectToUpdate) {
     }
 }
 
-function getIngredientSectionName(key) {
+export function getIngredientSectionName(key) {
     switch (key) {
         case 'poolish': return 'Poolish (Pré-Fermento)';
         case 'biga': return 'Biga (Pré-Fermento)';

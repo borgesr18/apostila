@@ -116,7 +116,7 @@ restoreDefaultRecipesButton.addEventListener('click', () => {
         localStorage.removeItem('apostilaPãesNotes');
         recipeNotes = {};
         loadDefaultRecipes();
-        populateNav();
+        populateNav(); 
         recipeContentDiv.innerHTML = '<p class="text-lg text-center text-slate-500">Receitas restauradas para o padrão. Selecione uma receita ou seção ao lado para começar.</p>';
         printRecipeButton.style.display = 'none';
         editRecipeButton.style.display = 'none';

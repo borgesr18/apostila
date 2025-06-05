@@ -116,6 +116,7 @@ restoreDefaultRecipesButton.addEventListener('click', () => {
         localStorage.removeItem('apostilaPãesNotes');
         recipeNotes = {};
         loadDefaultRecipes();
+        populateNav(); 
         populateNav();
         recipeContentDiv.innerHTML = '<p class="text-lg text-center text-slate-500">Receitas restauradas para o padrão. Selecione uma receita ou seção ao lado para começar.</p>';
         printRecipeButton.style.display = 'none';
@@ -689,6 +690,7 @@ function filterNav(query) {
 // Inicialização da Aplicação
 document.addEventListener('DOMContentLoaded', () => {
     initializeRecipes();
+    loadNotes();
     populateNav();
     loadNotes();
     populateNav();
@@ -731,6 +733,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     deleteRecipeButton.addEventListener('click', () => {
         if (!currentRecipeForSaving) return;
+        if (!checkPassword()) return;
         if (confirm('Tem certeza que deseja excluir esta receita?')) {
             recipes = recipes.filter(r => !(r.name === currentRecipeForSaving.name && r.category === currentRecipeForSaving.category && r.type !== 'page'));
             saveRecipesToLocalStorage();

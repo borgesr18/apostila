@@ -373,6 +373,12 @@
         </main>
     </div>
 
-    <script type="module" src="scripts/main.js"></script>
+    <script>
+      const base = location.pathname.replace(/[^\/]*$/, '');
+      const s = document.createElement('script');
+      s.type = 'module';
+      s.src = base + 'scripts/main.js';
+      document.currentScript.replaceWith(s);
+    </script>
 </body>
 </html>

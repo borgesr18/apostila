@@ -4,7 +4,7 @@ Esta é uma apostila interativa de receitas de pães implementada somente com HT
 
 ## Executando localmente
 
-Como o projeto usa módulos JavaScript, é recomendável servi-lo via HTTP para evitar problemas de carregamento. Se você possui o Python instalado, execute na pasta do projeto:
+Como o projeto usa módulos JavaScript, é essencial servi-lo via HTTP para evitar problemas de carregamento. **Não abra o `index.html` diretamente pelo navegador**, pois algumas funcionalidades deixarão de funcionar. Se você possui o Python instalado, execute na pasta do projeto:
 
 ```bash
 python3 -m http.server

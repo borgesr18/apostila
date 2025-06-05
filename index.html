@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apostila Interativa de Pães</title>
+    <title>Receitas de Pães</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F0F4F8; 
-            color: #1E293B; 
+            background-color: #F0F4F8;
+            color: #1E293B;
         }
         .sidebar {
-            background-color: #0C4A6E; 
+            background-color: #0C4A6E;
             min-height: 100vh;
-            width: 25%; 
+            width: 25%;
         }
-        @media (min-width: 1024px) { 
+        @media (min-width: 1024px) {
             .sidebar {
                 width: 20%;
             }
@@ -29,14 +29,14 @@
             align-items: center;
             width: 100%;
             padding: 0.85rem 1rem;
-            font-size: 0.875rem; 
-            font-weight: 700; 
-            color: #E0F2FE; 
-            text-transform: uppercase;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #E0F2FE;
+            text-transform: none;
             letter-spacing: 0.05em;
             background-color: transparent;
             border: none;
-            border-bottom: 1px solid #075985; 
+            border-bottom: 1px solid #075985;
             cursor: pointer;
             text-align: left;
             transition: background-color 0.2s ease-in-out;
@@ -48,100 +48,100 @@
             width: 1rem;
             height: 1rem;
             transition: transform 0.3s ease-in-out;
-            fill: #E0F2FE; 
+            fill: #E0F2FE;
         }
         .nav-category-button.open svg {
             transform: rotate(90deg);
         }
         .nav-submenu {
             max-height: 0;
-            overflow-y: auto; 
-            transition: max-height 0.4s ease-in-out; 
-            background-color: #0E5E8E; 
+            overflow-y: auto;
+            transition: max-height 0.4s ease-in-out;
+            background-color: #0E5E8E;
         }
         .nav-submenu.open {
-            max-height: 500px; 
+            max-height: 500px;
         }
         .nav-item {
-            padding: 0.75rem 1rem 0.75rem 1.75rem; 
+            padding: 0.75rem 1rem 0.75rem 1.75rem;
             border-radius: 0.375rem;
             cursor: pointer;
             transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-            color: #E0F2FE; 
+            color: #E0F2FE;
             display: block;
-            font-size: 0.875rem; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
+            font-size: 0.875rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .nav-item:hover {
-            background-color: #075985; 
-            color: #FFFFFF; 
+            background-color: #075985;
+            color: #FFFFFF;
         }
         .nav-item.active, .nav-page-button.active-page, .nav-category-button.active-category {
-            background-color: #2563EB; 
+            background-color: #2563EB;
             color: white;
             font-weight: 600;
         }
-         .nav-category-button.active-category { 
-             background-color: #0369A1; 
+         .nav-category-button.active-category {
+             background-color: #0369A1;
              color: #FFFFFF;
         }
 
         .content-area {
-            background-color: #FFFFFF; 
+            background-color: #FFFFFF;
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            position: relative; 
+            position: relative;
         }
         .page-title, .recipe-title {
-            color: #111827; 
-            border-bottom: 2px solid #3B82F6; 
-            font-size: 1.875rem; 
-            font-weight: 700; 
-            margin-bottom: 1rem; 
-            padding-bottom: 0.5rem; 
+            color: #111827;
+            border-bottom: 2px solid #3B82F6;
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
         }
-        .content-area h3 { 
-            font-size: 1.5rem; 
-            font-weight: 600; 
-            margin-top: 1.5rem; 
-            margin-bottom: 1rem; 
-            color: #1E293B; 
-            border-bottom: 1px solid #93C5FD; 
+        .content-area h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1E293B;
+            border-bottom: 1px solid #93C5FD;
             padding-bottom: 0.25rem;
         }
-         .content-area h4 { 
-            font-size: 1.25rem; 
-            font-weight: 600; 
-            margin-top: 1.25rem; 
-            margin-bottom: 0.75rem; 
-            color: #1E293B; 
+         .content-area h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: #1E293B;
         }
         .content-area p, .content-area li:not(.edit-item-li) {
-            color: #334155; 
-            margin-bottom: 0.75rem; 
+            color: #334155;
+            margin-bottom: 0.75rem;
             line-height: 1.6;
         }
         .content-area ul:not(.edit-controls) {
             list-style-type: disc;
-            margin-left: 1.5rem; 
-            padding-left: 1rem; 
+            margin-left: 1.5rem;
+            padding-left: 1rem;
         }
          .content-area ol {
             list-style-type: decimal;
-            margin-left: 1.5rem; 
-            padding-left: 1rem; 
+            margin-left: 1.5rem;
+            padding-left: 1rem;
         }
         .content-area strong {
             font-weight: 600;
             color: #1E293B;
         }
-        .dicas-jean { 
-            background-color: #F0FDFA; 
-            border-left: 4px solid #14B8A6; 
-            color: #0F766E; 
-            padding: 1rem; 
+        .dicas-jean {
+            background-color: #F0FDFA;
+            border-left: 4px solid #14B8A6;
+            color: #0F766E;
+            padding: 1rem;
         }
         table {
             width: 100%;
@@ -149,29 +149,29 @@
             margin-bottom: 1rem;
         }
         th, td {
-            border: 1px solid #E5E7EB; 
+            border: 1px solid #E5E7EB;
             padding: 0.5rem;
             text-align: left;
-            vertical-align: top; 
+            vertical-align: top;
         }
         th {
-            background-color: #F3F4F6; 
+            background-color: #F3F4F6;
             font-weight: 600;
-            color: #374151; 
+            color: #374151;
         }
         .edit-mode-input, .edit-mode-textarea {
             width: 100%;
             padding: 0.375rem 0.5rem;
-            border: 1px solid #D1D5DB; 
-            border-radius: 0.25rem; 
-            box-sizing: border-box; 
+            border: 1px solid #D1D5DB;
+            border-radius: 0.25rem;
+            box-sizing: border-box;
         }
         .edit-mode-textarea {
-            min-height: 60px; 
-            resize: vertical; 
+            min-height: 60px;
+            resize: vertical;
         }
         .remove-btn, .add-btn {
-            background-color: #EF4444; 
+            background-color: #EF4444;
             color: white;
             border: none;
             padding: 0.25rem 0.5rem;
@@ -182,26 +182,26 @@
             transition: background-color 0.2s;
         }
         .remove-btn:hover {
-            background-color: #DC2626; 
+            background-color: #DC2626;
         }
         .add-btn {
-            background-color: #22C55E; 
+            background-color: #22C55E;
             margin-top: 0.5rem;
-            display: inline-block; 
+            display: inline-block;
         }
         .add-btn:hover {
-            background-color: #16A34A; 
+            background-color: #16A34A;
         }
-        .edit-item-li { 
+        .edit-item-li {
             display: flex;
-            align-items: flex-start; 
+            align-items: flex-start;
             margin-bottom: 0.5rem;
         }
         .edit-item-li .edit-mode-textarea {
-            flex-grow: 1; 
+            flex-grow: 1;
         }
         #mobileMenuButton { display: none; }
-        #recipeControlsContainer, #printRecipeButtonContainer { 
+        #recipeControlsContainer, #printRecipeButtonContainer {
             text-align: right;
             margin-bottom: 1rem;
         }
@@ -220,11 +220,11 @@
             background-color: #3B82F6;
             transform: translateY(-2px);
         }
-        #editRecipeButton { background-color: #F59E0B; } 
-        #editRecipeButton:hover { background-color: #D97706; } 
-        #cancelEditButton { background-color: #6B7280; } 
-        #cancelEditButton:hover { background-color: #4B5563; } 
-        #restoreDefaultRecipesButton { background-color: #D9534F; } 
+        #editRecipeButton { background-color: #F59E0B; }
+        #editRecipeButton:hover { background-color: #D97706; }
+        #cancelEditButton { background-color: #6B7280; }
+        #cancelEditButton:hover { background-color: #4B5563; }
+        #restoreDefaultRecipesButton { background-color: #D9534F; }
         #restoreDefaultRecipesButton:hover { background-color: #C9302C; }
 
         #addRecipeButton { background-color: #10B981; }
@@ -241,7 +241,7 @@
             .sidebar { position: fixed; top: 0; left: -250px; width: 250px; height: 100%; z-index: 40; transition: left 0.3s ease-in-out; overflow-y: auto; }
             .sidebar.open { left: 0; }
             .main-content-area { margin-left: 0; }
-            .content-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 30; }
+            .content-overlay { display: none; position: fixed; top: 0; left: 0;width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 30; }
             .content-overlay.open { display: block; }
             #printRecipeButtonContainer, #recipeControlsContainer { margin-top: 1rem; text-align: center; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
         }
@@ -307,10 +307,10 @@
 
         <main id="mainContent" class="main-content-area flex-1 p-4 md:p-8">
             <header class="mb-8 text-center">
-                <h1 class="text-4xl font-bold text-blue-700">Apostila Interativa de Pães</h1>
+                <h1 class="text-4xl font-bold text-blue-700">Receitas de Pães</h1>
                 <p class="text-lg text-slate-600 mt-2">Um Guia Completo para Panificação</p>
             </header>
-            
+
             <div id="recipeControlsContainer" class="flex justify-end items-center mb-4">
                  <button id="editRecipeButton" style="display: none;">
                     ✏️ Editar Receita
@@ -318,7 +318,7 @@
                 <button id="saveRecipeChangesButton" style="display: none;">
                     💾 Salvar Localmente
                 </button>
-                 <button id="cancelEditButton" style="display: none;">
+                <button id="cancelEditButton" style="display: none;">
                     ❌ Cancelar Edição
                 </button>
                  <button id="printRecipeButton" style="display: none;">

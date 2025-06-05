@@ -1,14 +1,6 @@
 import { pageContents } from "../data/pageContents.js";
 import { defaultBasicRecipesData, defaultBuffetRecipesData, defaultFrenchRecipesData, defaultAllAdvancedRecipeData, defaultCreamsAndFillingsData, defaultFermentationSubmenuData } from "../data/recipes.js";
 
-<script>
-  const base = location.pathname.replace(/[^\/]*$/, '');
-  const s = document.createElement('script');
-  s.type = 'module';
-  s.src = base + 'scripts/main.js';
-  document.currentScript.replaceWith(s);
-</script>
-
 // --- LÓGICA PRINCIPAL DA APLICAÇÃO ---
 let recipes = [];
 
@@ -722,6 +714,14 @@ document.addEventListener('DOMContentLoaded', () => {
         window.print();
     });
 });
+
+<script>
+  const base = location.pathname.replace(/[^\/]*$/, '');
+  const s = document.createElement('script');
+  s.type = 'module';
+  s.src = base + 'scripts/main.js';
+  document.currentScript.replaceWith(s);
+</script>
 
 document.addEventListener('DOMContentLoaded', () => {
     addRecipeButton.addEventListener('click', () => {

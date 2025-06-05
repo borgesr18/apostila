@@ -25,9 +25,10 @@ const flourCalculatorContainer = document.createElement('div');
       flourCalculatorContainer.id = 'flourCalculatorContainer';
       flourCalculatorContainer.classList.add('my-4', 'p-4', 'border', 'border-slate-300', 'rounded-md', 'bg-slate-50', 'no-print'); 
 
-let currentRecipeForSaving = null; 
+let currentRecipeForSaving = null;
 let currentRecipeOriginalData = null;
 let isEditMode = false;
+let recipeNotes = {};
 
 function checkPassword() {
     const stored = localStorage.getItem('apostilaPãesPassword');
@@ -98,10 +99,23 @@ function saveRecipesToLocalStorage() {
     }
 }
 
+function loadNotes() {
+    const stored = localStorage.getItem('apostilaPãesNotes');
+    if (stored) {
+        try { recipeNotes = JSON.parse(stored); } catch (e) { recipeNotes = {}; }
+    }
+}
+
+function saveNotes() {
+    localStorage.setItem('apostilaPãesNotes', JSON.stringify(recipeNotes));
+}
+
 restoreDefaultRecipesButton.addEventListener('click', () => {
     if (confirm("Tem certeza que deseja restaurar todas as receitas para o padrão original? Todas as alterações salvas localmente serão perdidas.")) {
         localStorage.removeItem('apostilaPãesRecipes');
-        loadDefaultRecipes(); 
+        localStorage.removeItem('apostilaPãesNotes');
+        recipeNotes = {};
+        loadDefaultRecipes();
         populateNav(); 
         recipeContentDiv.innerHTML = '<p class="text-lg text-center text-slate-500">Receitas restauradas para o padrão. Selecione uma receita ou seção ao lado para começar.</p>';
         printRecipeButton.style.display = 'none';
@@ -364,8 +378,17 @@ function displayRecipeDetail(recipe) {
         </div>
         <div class="mt-8">
             <h4 class="text-lg font-semibold mb-2 text-slate-800">Minhas Anotações (para esta sessão):</h4>
-            <textarea class="w-full h-32 p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Suas observações sobre o teste desta receita..."></textarea>
+            <textarea id="notesTextarea-${recipe.name.replace(/\s/g,'-')}" class="w-full h-32 p-2 border border-slate-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Suas observações sobre o teste desta receita..."></textarea>
         </div>`;
+
+    const notesArea = document.getElementById(`notesTextarea-${recipe.name.replace(/\s/g,'-')}`);
+    if (notesArea) {
+        notesArea.value = recipeNotes[recipe.name] || '';
+        notesArea.addEventListener('input', () => {
+            recipeNotes[recipe.name] = notesArea.value;
+            saveNotes();
+        });
+    }
 }
 
 function saveRecipeChangesInMemory(recipeObjectToUpdate) {
@@ -628,10 +651,46 @@ function populateNav() {
     });
 }
 
+function filterNav(query) {
+    const q = query.trim().toLowerCase();
+    document.querySelectorAll('#recipeNav > div').forEach(cat => {
+        const button = cat.querySelector('.nav-category-button');
+        const subMenu = cat.querySelector('.nav-submenu');
+        let match = false;
+        subMenu.querySelectorAll('.nav-item').forEach(item => {
+            const isMatch = item.textContent.toLowerCase().includes(q);
+            item.style.display = isMatch || q === '' ? 'block' : 'none';
+            if (isMatch) match = true;
+        });
+        if (q === '') {
+            button.style.display = 'flex';
+            subMenu.style.display = '';
+            button.classList.remove('open');
+            subMenu.classList.remove('open');
+        } else {
+            button.style.display = match ? 'flex' : 'none';
+            subMenu.style.display = match ? '' : 'none';
+            if (match) {
+                button.classList.add('open');
+                subMenu.classList.add('open');
+            } else {
+                button.classList.remove('open');
+                subMenu.classList.remove('open');
+            }
+        }
+    });
+}
+
 // Inicialização da Aplicação
 document.addEventListener('DOMContentLoaded', () => {
     initializeRecipes();
+    loadNotes();
     populateNav();
+    filterNav('');
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => filterNav(searchInput.value));
+    }
 
     mobileMenuButton.addEventListener('click', () => {
         sidebar.classList.toggle('open');
@@ -670,6 +729,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirm('Tem certeza que deseja excluir esta receita?')) {
             recipes = recipes.filter(r => !(r.name === currentRecipeForSaving.name && r.category === currentRecipeForSaving.category && r.type !== 'page'));
             saveRecipesToLocalStorage();
+            delete recipeNotes[currentRecipeForSaving.name];
+            saveNotes();
             populateNav();
             recipeContentDiv.innerHTML = '<p class="text-lg text-center text-slate-500">Selecione uma receita ou seção ao lado para começar.</p>';
             printRecipeButton.style.display = 'none';

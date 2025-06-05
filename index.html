@@ -374,6 +374,25 @@
     </div>
 
     <script>
+
+        (function() {
+            const { origin, pathname } = window.location;
+            let dir = pathname;
+            if (!dir.endsWith('/')) {
+                const last = dir.substring(dir.lastIndexOf('/') + 1);
+                if (!last.includes('.')) {
+                    dir += '/';
+                } else {
+                    dir = dir.replace(/[^/]*$/, '');
+                }
+            }
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.src = origin + dir + 'scripts/main.js';
+            document.head.appendChild(script);
+        })();
+    </script>
+
       (function() {
         let basePath = location.pathname;
         if (!basePath.endsWith('/')) {

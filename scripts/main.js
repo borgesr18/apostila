@@ -18,14 +18,35 @@ const cancelEditButton = document.getElementById('cancelEditButton');
 const restoreDefaultRecipesButton = document.getElementById('restoreDefaultRecipesButton');
 const addRecipeButton = document.getElementById("addRecipeButton");
 const deleteRecipeButton = document.getElementById("deleteRecipeButton");
+const changePasswordButton = document.getElementById("changePasswordButton");
+const toggleThemeButton = document.getElementById("toggleThemeButton");
 
 const flourCalculatorContainer = document.createElement('div');
       flourCalculatorContainer.id = 'flourCalculatorContainer';
       flourCalculatorContainer.classList.add('my-4', 'p-4', 'border', 'border-slate-300', 'rounded-md', 'bg-slate-50', 'no-print'); 
 
 let currentRecipeForSaving = null; 
-let currentRecipeOriginalData = null; 
+let currentRecipeOriginalData = null;
 let isEditMode = false;
+
+function checkPassword() {
+    const stored = localStorage.getItem('apostilaPãesPassword');
+    if (!stored) {
+        const newPass = prompt('Defina uma senha para editar:');
+        if (!newPass) return false;
+        localStorage.setItem('apostilaPãesPassword', newPass);
+        alert('Senha definida.');
+        return true;
+    } else {
+        const entered = prompt('Digite a senha:');
+        if (entered === stored) {
+            return true;
+        } else {
+            alert('Senha incorreta.');
+            return false;
+        }
+    }
+}
 
 function loadDefaultRecipes() {
     defaultBasicRecipesData.forEach(r => r.category = "basicos");
@@ -206,7 +227,8 @@ function addListItem(listElement, type) {
 
 editRecipeButton.addEventListener('click', () => {
     if (currentRecipeForSaving) {
-        currentRecipeOriginalData = JSON.parse(JSON.stringify(currentRecipeForSaving)); 
+        if (!checkPassword()) return;
+        currentRecipeOriginalData = JSON.parse(JSON.stringify(currentRecipeForSaving));
         setEditableState(true);
     }
 });
@@ -628,6 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     addRecipeButton.addEventListener('click', () => {
+        if (!checkPassword()) return;
         const name = prompt('Nome da nova receita:');
         if (!name) return;
         const category = prompt('Categoria (basicos, buffet, franceses, avancados):', 'basicos');
@@ -643,6 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     deleteRecipeButton.addEventListener('click', () => {
         if (!currentRecipeForSaving) return;
+        if (!checkPassword()) return;
         if (confirm('Tem certeza que deseja excluir esta receita?')) {
             recipes = recipes.filter(r => !(r.name === currentRecipeForSaving.name && r.category === currentRecipeForSaving.category && r.type !== 'page'));
             saveRecipesToLocalStorage();
@@ -658,5 +682,28 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteRecipeButton.style.display = 'inline-flex';
             currentRecipeForSaving = null;
         }
+    });
+
+    changePasswordButton.addEventListener('click', () => {
+        const newPass = prompt('Nova senha (deixe vazio para remover):');
+        if (newPass === null) return;
+        if (newPass === '') {
+            localStorage.removeItem('apostilaPãesPassword');
+            alert('Senha removida.');
+        } else {
+            localStorage.setItem('apostilaPãesPassword', newPass);
+            alert('Senha atualizada.');
+        }
+    });
+
+    const savedTheme = localStorage.getItem('apostilaTheme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+    toggleThemeButton.textContent = document.body.classList.contains('dark-mode') ? '☀️ Tema Claro' : '🌙 Tema Escuro';
+    toggleThemeButton.addEventListener('click', () => {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('apostilaTheme', isDark ? 'dark' : 'light');
+        toggleThemeButton.textContent = isDark ? '☀️ Tema Claro' : '🌙 Tema Escuro';
     });
 });

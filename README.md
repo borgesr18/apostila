@@ -1,4 +1,4 @@
-# Apostila de Pães
+# Receitas de Pães
 
 Esta é uma apostila interativa de receitas de pães implementada somente com HTML e JavaScript. Todas as receitas são carregadas no navegador e podem ser editadas livremente. As alterações permanecem apenas no `localStorage` do seu navegador.
 

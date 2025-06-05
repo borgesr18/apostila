@@ -1,0 +1,129 @@
+import { pageContents } from "../data/pageContents.js";
+import { defaultBasicRecipesData, defaultBuffetRecipesData, defaultFrenchRecipesData, defaultAllAdvancedRecipeData, defaultCreamsAndFillingsData, defaultFermentationSubmenuData } from "../data/recipes.js";
+
+// --- LÓGICA PRINCIPAL DA APLICAÇÃO ---
+let recipes = [];
+
+const recipeNav = document.getElementById('recipeNav');
+const recipeContentDiv = document.getElementById('recipeContent');
+const recipeContentContainer = document.getElementById('recipeContentContainer');
+const mobileMenuButton = document.getElementById('mobileMenuButton');
+const sidebar = document.getElementById('sidebar');
+const contentOverlay = document.getElementById('contentOverlay');
+
+const printRecipeButton = document.getElementById('printRecipeButton');
+const editRecipeButton = document.getElementById('editRecipeButton');
+const saveRecipeChangesButton = document.getElementById('saveRecipeChangesButton');
+const cancelEditButton = document.getElementById('cancelEditButton');
+const restoreDefaultRecipesButton = document.getElementById('restoreDefaultRecipesButton');
+const addRecipeButton = document.getElementById("addRecipeButton");
+const deleteRecipeButton = document.getElementById("deleteRecipeButton");
+const changePasswordButton = document.getElementById("changePasswordButton");
+const toggleThemeButton = document.getElementById("toggleThemeButton");
+
+const flourCalculatorContainer = document.createElement('div');
+      flourCalculatorContainer.id = 'flourCalculatorContainer';
+      flourCalculatorContainer.classList.add('my-4', 'p-4', 'border', 'border-slate-300', 'rounded-md', 'bg-slate-50', 'no-print');
+
+let currentRecipeForSaving = null;
+let currentRecipeOriginalData = null;
+let isEditMode = false;
+let recipeNotes = {};
+
+function checkPassword() {
+    const stored = localStorage.getItem('apostilaPãesPassword');
+    if (!stored) {
+        const newPass = prompt('Defina uma senha para editar:');
+        if (!newPass) return false;
+        localStorage.setItem('apostilaPãesPassword', newPass);
+        alert('Senha definida.');
+        return true;
+    } else {
+        const entered = prompt('Digite a senha:');
+        if (entered === stored) {
+            return true;
+        } else {
+            alert('Senha incorreta.');
+            return false;
+        }
+    }
+}
+
+function loadDefaultRecipes() {
+    defaultBasicRecipesData.forEach(r => r.category = "basicos");
+    defaultBuffetRecipesData.forEach(r => r.category = "buffet");
+    defaultFrenchRecipesData.forEach(r => r.category = "franceses");
+    defaultAllAdvancedRecipeData.forEach(r => r.category = "avancados");
+    defaultCreamsAndFillingsData.forEach(r => { r.category = "cremes_recheios"; r.type = "page"; });
+
+    recipes = [
+        ...JSON.parse(JSON.stringify(defaultBasicRecipesData)),
+        ...JSON.parse(JSON.stringify(defaultBuffetRecipesData)),
+        ...JSON.parse(JSON.stringify(defaultFrenchRecipesData)),
+        ...JSON.parse(JSON.stringify(defaultAllAdvancedRecipeData)),
+        ...JSON.parse(JSON.stringify(defaultCreamsAndFillingsData))
+    ];
+}
+
+
+function initializeRecipes() {
+    const storedRecipes = localStorage.getItem('apostilaPãesRecipes');
+    if (storedRecipes) {
+        try {
+            recipes = JSON.parse(storedRecipes);
+            const hasPageCategories = recipes.some(r => (r.category === 'cremes_recheios' || r.category === 'fermentacao_submenu') && r.type === 'page');
+            if (!hasPageCategories && (defaultCreamsAndFillingsData.length > 0 || defaultFermentationSubmenuData.length > 0) ) {
+                console.log("LocalStorage antigo detectado ou sem categorias de página, recarregando defaults.");
+                loadDefaultRecipes();
+                saveRecipesToLocalStorage();
+            } else {
+                 console.log("Receitas carregadas do localStorage.");
+            }
+        } catch (e) {
+            console.error("Erro ao carregar/parsear receitas do localStorage:", e);
+            loadDefaultRecipes();
+        }
+    } else {
+        loadDefaultRecipes();
+        console.log("Nenhuma receita salva localmente. Carregando receitas padrão.");
+    }
+}
+
+function saveRecipesToLocalStorage() {
+    try {
+        localStorage.setItem('apostilaPãesRecipes', JSON.stringify(recipes));
+        console.log("Receitas salvas no localStorage.");
+    } catch (e) {
+        console.error("Erro ao salvar no localStorage:", e);
+        alert("Erro ao salvar localmente. Verifique as permissões do navegador ou se o localStorage está cheio.");
+    }
+}
+
+function loadNotes() {
+    const stored = localStorage.getItem('apostilaPãesNotes');
+    if (stored) {
+        try { recipeNotes = JSON.parse(stored); } catch (e) { recipeNotes = {}; }
+    }
+}
+
+function saveNotes() {
+    localStorage.setItem('apostilaPãesNotes', JSON.stringify(recipeNotes));
+}
+
+restoreDefaultRecipesButton.addEventListener('click', () => {
+    if (confirm("Tem certeza que deseja restaurar todas as receitas para o padrão original? Todas as alterações salvas localmente serão perdidas.")) {
+        localStorage.removeItem('apostilaPãesRecipes');
+        localStorage.removeItem('apostilaPãesNotes');
+        recipeNotes = {};
+        loadDefaultRecipes();
+        populateNav();
+        recipeContentDiv.innerHTML = '<p class="text-lg text-center text-slate-500">Receitas restauradas para o padrão. Selecione uma receita ou seção ao lado para começar.</p>';
+        printRecipeButton.style.display = 'none';
+        editRecipeButton.style.display = 'none';
+        saveRecipeChangesButton.style.display = 'none';
+        cancelEditButton.style.display = 'none';
+        flourCalculatorContainer.style.display = 'none';
+        restoreDefaultRecipesButton.style.display = 'none';
+    }
+});
+

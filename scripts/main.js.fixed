@@ -691,7 +691,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeRecipes();
     loadNotes();
     populateNav();
-    filterNav('');tElementById('searchInput');
+    filterNav('');
+    const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', () => filterNav(searchInput.value));
     }

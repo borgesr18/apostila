@@ -206,6 +206,24 @@
             margin-bottom: 1rem;
         }
         #printRecipeButton, #saveRecipeChangesButton, #editRecipeButton, #cancelEditButton, #restoreDefaultRecipesButton, #addRecipeButton, #deleteRecipeButton, #changePasswordButton, #toggleThemeButton {
+             background-color: #2563EB; 
+             color: white;
+             font-weight: 600; 
+             padding-top: 0.5rem; padding-bottom: 0.5rem; 
+             padding-left: 1rem; padding-right: 1rem; 
+             border-radius: 0.375rem; 
+             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+             margin-left: 0.5rem; 
+        }
+        #printRecipeButton:hover, #saveRecipeChangesButton:hover, #editRecipeButton:hover, #cancelEditButton:hover, #restoreDefaultRecipesButton:hover, #addRecipeButton:hover, #deleteRecipeButton:hover, #changePasswordButton:hover, #toggleThemeButton:hover {
+            background-color: #1D4ED8; 
+        }
+        #editRecipeButton { background-color: #F59E0B; } 
+        #editRecipeButton:hover { background-color: #D97706; } 
+        #cancelEditButton { background-color: #6B7280; } 
+        #cancelEditButton:hover { background-color: #4B5563; } 
+        #restoreDefaultRecipesButton { background-color: #D9534F; } 
+        #printRecipeButton, #saveRecipeChangesButton, #editRecipeButton, #cancelEditButton, #restoreDefaultRecipesButton, #addRecipeButton, #deleteRecipeButton, #changePasswordButton, #toggleThemeButton {
             background-color: #2563EB;
             color: white;
             font-weight: 600;
@@ -355,6 +373,22 @@
         </main>
     </div>
 
-    <script type="module" src="scripts/main.js"></script>
+
+    <script>
+      (function() {
+        let basePath = location.pathname;
+        if (!basePath.endsWith('/')) {
+          const lastSeg = basePath.substring(basePath.lastIndexOf('/') + 1);
+          basePath = lastSeg.includes('.')
+            ? basePath.substring(0, basePath.lastIndexOf('/') + 1)
+            : basePath + '/';
+        }
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = basePath + 'scripts/main.js';
+        document.currentScript.after(script);
+      })();
+    </script>
+    <script type="module" src="./scripts/main.js"></script>
 </body>
 </html>

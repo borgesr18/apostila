@@ -116,6 +116,7 @@ restoreDefaultRecipesButton.addEventListener('click', () => {
         localStorage.removeItem('apostilaPãesNotes');
         recipeNotes = {};
         loadDefaultRecipes();
+        populateNav(); 
         populateNav();
         recipeContentDiv.innerHTML = '<p class="text-lg text-center text-slate-500">Receitas restauradas para o padrão. Selecione uma receita ou seção ao lado para começar.</p>';
         printRecipeButton.style.display = 'none';
@@ -214,6 +215,7 @@ function setEditableState(isEditable) {
         restoreDefaultRecipesButton.style.display = 'none';
         addRecipeButton.style.display = 'none';
         deleteRecipeButton.style.display = 'none';
+    } else { 
     } else {
         if (currentRecipeForSaving) {
              displayRecipeDetail(currentRecipeForSaving);
@@ -288,6 +290,7 @@ function displayRecipeDetail(recipe) {
         const oldAddButtons = recipeContentDiv.querySelectorAll('.add-btn-container');
         oldAddButtons.forEach(btn => btn.remove());
         deleteRecipeButton.style.display = "none";
+        return; 
         return;
     }
 
@@ -415,7 +418,6 @@ function saveRecipeChangesInMemory(recipeObjectToUpdate) {
                  if(originalIngDataArray) {
                      originalIngData = originalIngDataArray.find(ing => ing.item === itemInput.value.trim()) || {};
                  }
-
                 newIngredientsData[sectionKey].push({
                     item: itemInput.value.trim(),
                     percentage: !isNaN(parseFloat(percentageText)) ? parseFloat(percentageText) : (percentageText === '-' || percentageText === '' ? null : percentageText),
@@ -553,6 +555,7 @@ function displayPageContent(htmlContent) {
     cancelEditButton.style.display = 'none';
     addRecipeButton.style.display = "inline-flex";
     deleteRecipeButton.style.display = "none";
+    flourCalculatorContainer.innerHTML = ''; 
     flourCalculatorContainer.innerHTML = '';
     flourCalculatorContainer.style.display = 'none';
     restoreDefaultRecipesButton.style.display = 'none';
@@ -689,6 +692,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeRecipes();
     loadNotes();
     populateNav();
+    loadNotes();
+    populateNav();
     filterNav('');
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
@@ -728,6 +733,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     deleteRecipeButton.addEventListener('click', () => {
         if (!currentRecipeForSaving) return;
+        if (!checkPassword()) return;
+        if (confirm('Tem certeza que deseja excluir esta receita?')) {
+            recipes = recipes.filter(r => !(r.name === currentRecipeForSaving.name && r.category === currentRecipeForSaving.category && r.type !== 'page'));
+            saveRecipesToLocalStorage();
         if (!checkPassword()) return;
         if (confirm('Tem certeza que deseja excluir esta receita?')) {
             recipes = recipes.filter(r => !(r.name === currentRecipeForSaving.name && r.category === currentRecipeForSaving.category && r.type !== 'page'));

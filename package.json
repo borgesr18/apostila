@@ -1,0 +1,19 @@
+{
+  "name": "apostila",
+  "version": "1.0.0",
+  "description": "Esta é uma apostila interativa de receitas de pães implementada somente com HTML e JavaScript. Todas as receitas são carregadas no navegador e podem ser editadas livremente. As alterações permanecem apenas no `localStorage` do seu navegador.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "cypress": "^12.0.0"
+  }
+}

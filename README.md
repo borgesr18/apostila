@@ -38,3 +38,11 @@ Clique em **Editar Receita** para modificar qualquer preparo. Depois utilize **S
 
 Distribuído sob a [Licença MIT](LICENSE).
 
+## Testes
+
+Para rodar os testes unitários e de interface, instale as dependências com `npm install`. Em seguida execute:
+
+```bash
+npm test            # executa testes unitários com Jest
+npm run cypress:open  # abre o Cypress para testes de interface
+```

@@ -374,6 +374,7 @@
     </div>
 
     <script>
+
         (function() {
             const { origin, pathname } = window.location;
             let dir = pathname;
@@ -391,5 +392,22 @@
             document.head.appendChild(script);
         })();
     </script>
+
+      (function() {
+        let basePath = location.pathname;
+        if (!basePath.endsWith('/')) {
+          const lastSeg = basePath.substring(basePath.lastIndexOf('/') + 1);
+          basePath = lastSeg.includes('.')
+            ? basePath.substring(0, basePath.lastIndexOf('/') + 1)
+            : basePath + '/';
+        }
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = basePath + 'scripts/main.js';
+        document.currentScript.after(script);
+      })();
+    </script>
+
+    <script type="module" src="./scripts/main.js"></script>
 </body>
 </html>

@@ -19,6 +19,7 @@ const restoreDefaultRecipesButton = document.getElementById('restoreDefaultRecip
 const addRecipeButton = document.getElementById("addRecipeButton");
 const deleteRecipeButton = document.getElementById("deleteRecipeButton");
 const changePasswordButton = document.getElementById("changePasswordButton");
+const toggleThemeButton = document.getElementById("toggleThemeButton");
 
 const flourCalculatorContainer = document.createElement('div');
       flourCalculatorContainer.id = 'flourCalculatorContainer';
@@ -693,5 +694,16 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('apostilaPãesPassword', newPass);
             alert('Senha atualizada.');
         }
+    });
+
+    const savedTheme = localStorage.getItem('apostilaTheme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+    toggleThemeButton.textContent = document.body.classList.contains('dark-mode') ? '☀️ Tema Claro' : '🌙 Tema Escuro';
+    toggleThemeButton.addEventListener('click', () => {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('apostilaTheme', isDark ? 'dark' : 'light');
+        toggleThemeButton.textContent = isDark ? '☀️ Tema Claro' : '🌙 Tema Escuro';
     });
 });
